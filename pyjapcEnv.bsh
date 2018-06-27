@@ -1,0 +1,7 @@
+#!/bin/bash 
+export PATH="/user/bdisoft/operational/bin/Python/PRO/bin:$PATH" 
+export JAVA_HOME="/usr/java/jdk1.8"
+
+git config --global user.name "Tomas Herman"
+git config --global user.email "tomas.herman@cern.ch"
+
