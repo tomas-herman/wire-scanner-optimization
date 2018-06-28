@@ -13,13 +13,19 @@ ring = str(sys.argv[2])
 plane = str(sys.argv[3])
 wire_speed = sys.argv[4]
 
-ctime = 770
+ctime = 795
 
 # Time of the measurement
 time_stamp = time.strftime("%Y_%m_%d_%H_%M_%S")
 print(" ")
 print(">> Script launched at:", time_stamp)
 print(" ")
+
+# Create folder
+folder = os.path.join(os.getcwd(), ring + plane + '_' + time_stamp)
+
+if not os.path.exists(folder):
+	os.makedirs(folder)
 
 # Start pyjapc
 japc = pyjapc.PyJapc()
@@ -71,6 +77,7 @@ def get_profile(ring, plane, folder, ctime, shot):
         data_y = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projDataSet1")
         with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_" + str(ctime)  + "_" + str(shot) + ".txt"), 'w') as fout:
             for i, j in zip(data_x, data_y):
+                #print(i, j)
                 fout.write("{:.12E}".format(i) + "  " + "{:.12E}".format(j) + '\n')
         return 1
     except TypeError:
@@ -80,30 +87,41 @@ def get_profile(ring, plane, folder, ctime, shot):
 
 # Callback function
 def callback(param_name, new_value):
-    global shot, index
     callback.counter += 1
-    shot += 1
     print('')
-    print('>> Shot', shot)
-    ctime = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#acqDelay")
-    set_ws_params(ring, plane, time_stamp, ctime, 4, 1000, wire_speed)
-    get_profile(ring, plane, folder, ctime, shot)
+    print('>> Shot', callback.counter)
+    #get_profile(ring, plane, folder, ctime, callback.counter)
+    #set_ws_params(ring, plane, time_stamp, ctime, 4, 1000, wire_speed)
+
+    if callback.counter % 3 == 1:
+        #print(callback.counter)
+        #get_profile(ring, plane, folder, ctime, callback.counter)
+        japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#mode", 1)
+        print('>> New scan')
+    elif callback.counter % 3 == 2:
+        print(">> Excecuting scan")
+        #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
+        #set_ws_params(ring, plane, time_stamp, ctime, 4, 1000, wire_speed)
+    else:
+        print(">> Reading data")
+        get_profile(ring, plane, folder, ctime, callback.counter)
+        print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
+    
         
-
-
-shot = 0
-callback.counter = 0
-index = 0
-measures = 2
-
-
-while shot < measures:
-    time.sleep(0.5)
-else:
-    time.sleep(5)
-    sys.exit(">> Finished measuring.")
-
-# Starting subscription
-#japc.subscribeParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition", callback)
 japc.subscribeParam("B" + ring + ".BCT-ST/Samples", callback)
 japc.startSubscriptions()
+
+
+callback.counter = 0
+measures = 6
+
+
+while callback.counter < measures:
+    time.sleep(0.5)
+else:
+    time.sleep(2)
+    sys.exit(">> Finished measuring.")
+
+japc.stopSubscriptions()
+japc.clearSubscriptions()
+
