@@ -14,8 +14,8 @@ plane = str(sys.argv[3])
 wire_speed = sys.argv[4]
 
 ctime = 796
-filt = 4
-pm = 1000
+filt = 0
+pm = 900
 
 # Time of the measurement
 time_stamp = time.strftime("%Y_%m_%d_%H_%M_%S")
@@ -69,7 +69,8 @@ def set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed):
     print(">> ctime set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#acqDelay"))
     print(">> ctime in the wirescanner:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#acqDelay"))
     print(">> Wire speed set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#wireSpeed"))
-    print(">> Photomultiplier gain set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#gain"))
+    #print(">> Photomultiplier gain set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#voltage"))
+    print(">> Photomultiplier gain set to (not measured!):", pm)
     print(">> Filter set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#pmFilter"))
 
 
@@ -82,7 +83,7 @@ def get_profile(ring, plane, folder, ctime, shot):
             for i, j in zip(data_x, data_y):
                 if l < 3: 
                     print(i, j)
-                    l = l+1
+                    l += 1
                 fout.write("{:.12E}".format(i) + "  " + "{:.12E}".format(j) + '\n')
         return 1
     except TypeError:
@@ -92,6 +93,7 @@ def get_profile(ring, plane, folder, ctime, shot):
 
 # Callback function
 def callback(param_name, new_value):
+    global pm
     callback.counter += 1
     print('')
     print('>> Shot', callback.counter)
@@ -101,19 +103,25 @@ def callback(param_name, new_value):
     if callback.counter % 3 == 1:
         #print(callback.counter)
         #get_profile(ring, plane, folder, ctime, callback.counter)
+        print('')
         print('>> Setting parameters for a new scan')
         set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed)
+        pm += 10
         
+
     elif callback.counter % 3 == 2:
+        print('')
         print(">> Excecuting scan")
         #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
         #set_ws_params(ring, plane, time_stamp, ctime, 4, 1000, wire_speed)
+        #pm += 10
     else:
+        print('')
         print(">> Reading data")
         get_profile(ring, plane, folder, ctime, callback.counter)
         #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
     
-        
+   
 japc.subscribeParam("B" + ring + ".BCT-ST/Samples", callback)
 japc.startSubscriptions()
 
@@ -123,7 +131,7 @@ measures = 6
 
 
 
-while callback.counter < measures:
+while pm <= 1010:
     time.sleep(0.5)
 else:
     time.sleep(1)
