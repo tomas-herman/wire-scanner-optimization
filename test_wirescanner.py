@@ -13,7 +13,9 @@ ring = str(sys.argv[2])
 plane = str(sys.argv[3])
 wire_speed = sys.argv[4]
 
-ctime = 795
+ctime = 796
+filt = 4
+pm = 1000
 
 # Time of the measurement
 time_stamp = time.strftime("%Y_%m_%d_%H_%M_%S")
@@ -73,11 +75,14 @@ def set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed):
 
 def get_profile(ring, plane, folder, ctime, shot):
     try:
+        l=0
         data_x = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1")
         data_y = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projDataSet1")
         with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_" + str(ctime)  + "_" + str(shot) + ".txt"), 'w') as fout:
             for i, j in zip(data_x, data_y):
-                #print(i, j)
+                if l < 3: 
+                    print(i, j)
+                    l = l+1
                 fout.write("{:.12E}".format(i) + "  " + "{:.12E}".format(j) + '\n')
         return 1
     except TypeError:
@@ -96,8 +101,9 @@ def callback(param_name, new_value):
     if callback.counter % 3 == 1:
         #print(callback.counter)
         #get_profile(ring, plane, folder, ctime, callback.counter)
-        japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#mode", 1)
-        print('>> New scan')
+        print('>> Setting parameters for a new scan')
+        set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed)
+        
     elif callback.counter % 3 == 2:
         print(">> Excecuting scan")
         #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
@@ -105,7 +111,7 @@ def callback(param_name, new_value):
     else:
         print(">> Reading data")
         get_profile(ring, plane, folder, ctime, callback.counter)
-        print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
+        #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
     
         
 japc.subscribeParam("B" + ring + ".BCT-ST/Samples", callback)
@@ -116,10 +122,11 @@ callback.counter = 0
 measures = 6
 
 
+
 while callback.counter < measures:
     time.sleep(0.5)
 else:
-    time.sleep(2)
+    time.sleep(1)
     sys.exit(">> Finished measuring.")
 
 japc.stopSubscriptions()
