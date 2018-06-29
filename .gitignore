@@ -1,0 +1,59 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+*.pyc
+
+# Editor backup files
+*~
+\#*\#
+
+# Common OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Common LaTeX generated files
+*.tex
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.bib
+
+# Output files
+*.dat
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints
+
+seed.txt
