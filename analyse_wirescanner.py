@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import glob
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
@@ -68,6 +69,16 @@ def plot_profile(infile):
 
 
 # data = get_column("R2H_2018_06_29_16_58_37/profile_R2_H_796_3.txt")
+
+for folder in os.listdir("."):
+	if folder.startswith("R"):
+		print(folder)
+		files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))
+		# print(os.path.join(os.getcwd(),folder,"*.txt"))
+		print(files)
+
+
+
 plot_profile("R2H_2018_06_29_16_58_37/profile_R2_H_796_3.txt")
 
 
@@ -85,7 +96,7 @@ plt.plot(data_x, gauss(data_x, popt[0], popt[1], popt[2]), label="fit", lw=0.8, 
 plt.xlabel('Position [mm]')
 plt.ylabel(r'Intensity [$10^{10}$]')
 # plt.xlim([-30,30])
-plt.legend(loc='best', prop={'size': 7}).get_frame().set_linewidth(0.5)
+plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 
 print('>> sigma =', abs(popt[2]))
 
