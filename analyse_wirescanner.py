@@ -74,9 +74,10 @@ for folder in os.listdir("."):
 	if folder.startswith("R"):
 		print(folder)
 		files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))
-		print(os.path.join(os.getcwd(),folder,"*.txt"))
+		# print(os.path.join(os.getcwd(),folder,"*.txt"))
+		print(files)
 
-print(files)
+
 
 plot_profile("R2H_2018_06_29_16_58_37/profile_R2_H_796_3.txt")
 
