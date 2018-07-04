@@ -79,7 +79,7 @@ def get_profile(ring, plane, folder, ctime, shot):
         l=0
         data_x = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1")
         data_y = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projDataSet1")
-        with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_" + str(ctime)  + "_" + str(shot) + ".txt"), 'w') as fout:
+        with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_" + str(ctime)  + "_" + str(wire_speed) + "_" + str(filt) + "_" + str(pm)  + ".txt"), 'w') as fout:
             for i, j in zip(data_x, data_y):
                 if l < 3: 
                     print(i, j)
@@ -106,7 +106,7 @@ def callback(param_name, new_value):
         print('')
         print('>> Setting parameters for a new scan')
         set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed)
-        pm += 10
+        pm += 20
         
 
     elif callback.counter % 3 == 2:
@@ -127,7 +127,7 @@ japc.startSubscriptions()
 
 
 callback.counter = 0
-measures = 6
+
 
 
 
