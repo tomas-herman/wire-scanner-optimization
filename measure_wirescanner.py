@@ -106,7 +106,7 @@ def callback(param_name, new_value):
         print('')
         print('>> Setting parameters for a new scan')
         set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed)
-        pm += 20
+        pm += 50
         
 
     elif callback.counter % 3 == 2:
@@ -131,7 +131,7 @@ callback.counter = 0
 
 
 
-while pm <= 1010:
+while pm <= 1011:
     time.sleep(0.5)
 else:
     time.sleep(1)
