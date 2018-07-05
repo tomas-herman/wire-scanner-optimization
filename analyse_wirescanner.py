@@ -75,11 +75,12 @@ for folder in os.listdir("."):
 		print(folder)
 		files = glob.glob(os.path.join(folder,"*.txt")) 
 		#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
-		print(files) 
-		print(" ")
+		# print(files) 
+		# print(" ")
 		for f in files:
 			# plot_profile(f)
-			pm = f[f.find('t_') + 2: f.find('t_') + 4].strip("_")
+			pm = f[f.find('pm') + 2: f.find('pm') + 4].strip("_")
+			print(pm)
 
 
 
