@@ -68,24 +68,33 @@ def plot_profile(infile):
 
 
 
+
 # data = get_column("R2H_2018_06_29_16_58_37/profile_R2_H_796_3.txt")
 
+sigmas = []
+pms = []
+
+
 for folder in os.listdir("."):
-	if folder.startswith("R1"):
-		print(folder)
+	if folder.startswith("R4"):
+		# print(folder)
 		files = glob.glob(os.path.join(folder,"*.txt")) 
 		#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
 		# print(files) 
 		# print(" ")
 		for f in files:
-			# plot_profile(f)
-			pm = f[f.find('pm') + 2: f.find('pm') + 4].strip("_")
-			print(pm)
+			pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
+			# print(pm)
+			if int(pm) > 60:
+				plot_profile(f)
+				# print('>> sigma =', abs(popt[2]))
+				sigmas.append(abs(popt[2]))
+				pms.append(pm)
 
 
 
 
-plot_profile("R2H_2018_06_29_16_58_37/profile_R2_H_796_3.txt")
+# plot_profile("R2H_2018_06_29_16_58_37/profile_R2_H_796_3.txt")
 
 
 # font = {'family': 'serif', 'serif': ['computer modern roman']}
@@ -96,15 +105,15 @@ plot_profile("R2H_2018_06_29_16_58_37/profile_R2_H_796_3.txt")
 # rcParams['legend.frameon'] = 'True'
 
 
-plt.scatter(data_x, data_y, s=0.3, color='black', label='Wirescanner data')
-plt.plot(data_x, gauss(data_x, popt[0], popt[1], popt[2]), label="fit", lw=0.8, color='green')
+plt.scatter(pms, sigmas, s=6, color='black', label='Wirescanner data')
+# plt.plot(data_x, gauss(data_x, popt[0], popt[1], popt[2]), label="fit", lw=0.8, color='green')
 # plt.title(ring + plane + ', ct = ' + ctime + ' ms, ' + r'$\epsilon =$' + str(round(em * 1e6, 3)) + ' mm.mrad')
-plt.xlabel('Position [mm]')
-plt.ylabel(r'Intensity [$10^{10}$]')
+plt.xlabel('PM gain [%]')
+plt.ylabel(r'sigma [mm]')
 # plt.xlim([-30,30])
 plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 
-print('>> sigma =', abs(popt[2]))
+# print('>> sigma =', abs(popt[2]))
 
 # evenly sampled time at 200ms intervals
 # t = np.arange(0., 5., 0.2)
@@ -116,4 +125,5 @@ print('>> sigma =', abs(popt[2]))
 
 # plt.ylabel("#events")
 # plt.xlabel("ctime [ms]")
-# plt.show()
+plt.show()
+# plt.savefig('sigma_on_pm.png', bbox_inches='tight')
