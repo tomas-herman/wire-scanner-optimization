@@ -71,11 +71,16 @@ def plot_profile(infile):
 # data = get_column("R2H_2018_06_29_16_58_37/profile_R2_H_796_3.txt")
 
 for folder in os.listdir("."):
-	if folder.startswith("R"):
+	if folder.startswith("R1"):
 		print(folder)
-		files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))
-		# print(os.path.join(os.getcwd(),folder,"*.txt"))
-		print(files)
+		files = glob.glob(os.path.join(folder,"*.txt")) 
+		#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
+		print(files) 
+		print(" ")
+		for f in files:
+			# plot_profile(f)
+			pm = f[f.find('t_') + 2: f.find('t_') + 4].strip("_")
+
 
 
 
@@ -110,4 +115,4 @@ print('>> sigma =', abs(popt[2]))
 
 # plt.ylabel("#events")
 # plt.xlabel("ctime [ms]")
-plt.show()
+# plt.show()
