@@ -73,7 +73,7 @@ def plot_profile(infile):
 
 sigmas = []
 pms = []
-
+counter = 1
 
 for folder in os.listdir("."):
 	if folder.startswith("R4"):
@@ -83,13 +83,16 @@ for folder in os.listdir("."):
 		# print(files) 
 		# print(" ")
 		for f in files:
-			pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
-			# print(pm)
-			if int(pm) > 60:
-				plot_profile(f)
-				# print('>> sigma =', abs(popt[2]))
-				sigmas.append(abs(popt[2]))
-				pms.append(pm)
+			shot = f[f.find('shot') + 4: f.find('shot') + 7].strip("_")
+			if int(shot) = counter:
+				counter += 1
+				pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
+				print(pm)
+				if int(pm) > 50:
+					plot_profile(f)
+					print('>> sigma =', abs(popt[2]))
+					sigmas.append(abs(popt[2]))
+					pms.append(pm)
 
 
 

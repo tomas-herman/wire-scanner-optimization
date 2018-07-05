@@ -79,7 +79,7 @@ def get_profile(ring, plane, folder, ctime, shot):
         l=0
         data_x = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1")
         data_y = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projDataSet1")
-        with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_time" + str(ctime)  + "_speed" + str(wire_speed) + "_filter" + str(filt) + "_shot" + str(shot/3).strip(".0") + "_pm" + str(pm) + "__" + ".txt"), 'w') as fout:
+        with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_time" + str(ctime)  + "_speed" + str(wire_speed) + "_filter" + str(filt) + "_shot" + str(shot/3).strip(".0") + "__" + "_pm" + str(pm) + "__" + ".txt"), 'w') as fout:
             for i, j in zip(data_x, data_y):
                 if l < 3: 
                     print(i, j)
