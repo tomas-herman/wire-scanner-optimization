@@ -74,25 +74,30 @@ def plot_profile(infile):
 sigmas = []
 pms = []
 counter = 1
+shot_max = 2
 
-for folder in os.listdir("."):
-	if folder.startswith("R4"):
-		# print(folder)
-		files = glob.glob(os.path.join(folder,"*.txt")) 
-		#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
-		# print(files) 
-		# print(" ")
-		for f in files:
-			shot = f[f.find('shot') + 4: f.find('shot') + 7].strip("_")
-			if int(shot) = counter:
-				counter += 1
-				pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
-				print(pm)
-				if int(pm) > 50:
-					plot_profile(f)
-					print('>> sigma =', abs(popt[2]))
-					sigmas.append(abs(popt[2]))
-					pms.append(pm)
+while counter <= shot_max:
+	for folder in os.listdir("."):
+		if folder.startswith("R4"):
+			# print(folder)
+			files = glob.glob(os.path.join(folder,"*.txt")) 
+			#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
+			# print(files) 
+			# print(" ")
+			for f in files:
+				shot = f[f.find('shot') + 4: f.find('shot') + 7].strip("_")
+				# print(shot)
+				if shot_max < int(shot): 
+					shot_max = int(shot)
+				if int(shot) == counter:
+					counter += 1
+					pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
+					print(pm)
+					if int(pm) > 50:
+						plot_profile(f)
+						print('>> sigma =', abs(popt[2]))
+						sigmas.append(abs(popt[2]))
+						pms.append(pm)
 
 
 
@@ -128,5 +133,5 @@ plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 
 # plt.ylabel("#events")
 # plt.xlabel("ctime [ms]")
-plt.show()
-# plt.savefig('sigma_on_pm.png', bbox_inches='tight')
+# plt.show()
+plt.savefig('sigma_on_pm.png', bbox_inches='tight')
