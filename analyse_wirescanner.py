@@ -78,31 +78,33 @@ for filt in filter:
 	sigmas = []
 	pms = []
 
-	counter = 1
-	shot_max = 2
+	counter = 25 #set to 1 normally
+	shot_max = 26 #set to 2 normally
 
 	while counter <= shot_max:
 		for folder in os.listdir("."):
-			if folder.startswith("R4"):
-				# print(folder)
-				files = glob.glob(os.path.join(folder,"*.txt")) 
-				#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
-				# print(files) 
-				# print(" ")
-				for f in files:
-					shot = f[f.find('shot') + 4: f.find('shot') + 7].strip("_")
-					# print(shot)
-					if shot_max < int(shot): 
-						shot_max = int(shot)
-					if int(shot) == counter:
-						counter += 1
-						pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
-						print(pm)
-						if int(pm) > 50:
-							plot_profile(f)
-							print('>> sigma =', abs(popt[2]))
-							sigmas.append(abs(popt[2]))
-							pms.append(pm)
+			if folder.startswith("R1"):
+				if "Filter"+str(filt) in folder:
+					# print(folder)
+					files = glob.glob(os.path.join(folder,"*.txt")) 
+					#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
+					# print(files) 
+					# print(" ")
+					for f in files:
+						shot = f[f.find('shot') + 4: f.find('shot') + 7].strip("_")
+						# print(shot)
+						# print(shot_max)
+						if shot_max < int(shot): 
+							shot_max = int(shot)
+						if int(shot) == counter:
+							counter += 1
+							pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
+							print(pm)
+							if int(pm) > 249:
+								plot_profile(f)
+								print('>> sigma =', abs(popt[2]))
+								sigmas.append(abs(popt[2]))
+								pms.append(pm)
 
 
 	measured_data_dict[(str(filt),"pms")] = pms 
