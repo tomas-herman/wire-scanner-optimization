@@ -129,7 +129,7 @@ callback.counter = 0
 
 
 
-while pm <= 1011:
+while pm <= 1001:
     time.sleep(0.5)
 else:
     time.sleep(1)
