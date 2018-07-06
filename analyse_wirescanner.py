@@ -4,6 +4,7 @@ import re
 import glob
 import numpy as np
 import matplotlib.pyplot as plt
+import collections
 from matplotlib import rcParams
 from scipy.optimize import curve_fit
 
@@ -65,44 +66,51 @@ def plot_profile(infile):
     # print('>> ctime =', ctime, ', emittance =', em, ', sigma =', abs(popt[2]))
 
 
+filter = np.arange(0, 2)
+color_list = ["black", "blue", "orange", "green", "yellow", "magenta", "purple", "red", "maroon"]
+
+measured_data_dict = collections.defaultdict(list)
 
 
 
+for filt in filter:
 
-# data = get_column("R2H_2018_06_29_16_58_37/profile_R2_H_796_3.txt")
+	sigmas = []
+	pms = []
 
-sigmas = []
-pms = []
-counter = 1
-shot_max = 2
+	counter = 1
+	shot_max = 2
 
-while counter <= shot_max:
-	for folder in os.listdir("."):
-		if folder.startswith("R4"):
-			# print(folder)
-			files = glob.glob(os.path.join(folder,"*.txt")) 
-			#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
-			# print(files) 
-			# print(" ")
-			for f in files:
-				shot = f[f.find('shot') + 4: f.find('shot') + 7].strip("_")
-				# print(shot)
-				if shot_max < int(shot): 
-					shot_max = int(shot)
-				if int(shot) == counter:
-					counter += 1
-					pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
-					print(pm)
-					if int(pm) > 50:
-						plot_profile(f)
-						print('>> sigma =', abs(popt[2]))
-						sigmas.append(abs(popt[2]))
-						pms.append(pm)
-
-
+	while counter <= shot_max:
+		for folder in os.listdir("."):
+			if folder.startswith("R4"):
+				# print(folder)
+				files = glob.glob(os.path.join(folder,"*.txt")) 
+				#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
+				# print(files) 
+				# print(" ")
+				for f in files:
+					shot = f[f.find('shot') + 4: f.find('shot') + 7].strip("_")
+					# print(shot)
+					if shot_max < int(shot): 
+						shot_max = int(shot)
+					if int(shot) == counter:
+						counter += 1
+						pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
+						print(pm)
+						if int(pm) > 50:
+							plot_profile(f)
+							print('>> sigma =', abs(popt[2]))
+							sigmas.append(abs(popt[2]))
+							pms.append(pm)
 
 
-# plot_profile("R2H_2018_06_29_16_58_37/profile_R2_H_796_3.txt")
+	measured_data_dict[(str(filt),"pms")] = pms 
+	measured_data_dict[(str(filt),"sigmas")] = sigmas
+
+	plt.scatter(measured_data_dict[(str(filt),"pms")], measured_data_dict[(str(filt),"sigmas")], s=6, color=color_list[filt], label='Wirescanner data filter: ' + str(filt))
+
+
 
 
 # font = {'family': 'serif', 'serif': ['computer modern roman']}
@@ -113,7 +121,6 @@ while counter <= shot_max:
 # rcParams['legend.frameon'] = 'True'
 
 
-plt.scatter(pms, sigmas, s=6, color='black', label='Wirescanner data')
 # plt.plot(data_x, gauss(data_x, popt[0], popt[1], popt[2]), label="fit", lw=0.8, color='green')
 # plt.title(ring + plane + ', ct = ' + ctime + ' ms, ' + r'$\epsilon =$' + str(round(em * 1e6, 3)) + ' mm.mrad')
 plt.xlabel('PM gain [%]')
@@ -121,7 +128,13 @@ plt.ylabel(r'sigma [mm]')
 # plt.xlim([-30,30])
 plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 
-# print('>> sigma =', abs(popt[2]))
+plt.show()
+# plt.savefig('sigma_on_pm.png', bbox_inches='tight')
+
+
+
+
+
 
 # evenly sampled time at 200ms intervals
 # t = np.arange(0., 5., 0.2)
@@ -129,9 +142,3 @@ plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 
 # red dashes, blue squares and green triangles
 # plt.plot(t, t, 'r--', t, t**2, 'bs', t, t**3, 'g^')
-
-
-# plt.ylabel("#events")
-# plt.xlabel("ctime [ms]")
-# plt.show()
-plt.savefig('sigma_on_pm.png', bbox_inches='tight')
