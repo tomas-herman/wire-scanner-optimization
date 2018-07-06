@@ -66,13 +66,13 @@ def plot_profile(infile):
     # print('>> ctime =', ctime, ', emittance =', em, ', sigma =', abs(popt[2]))
 
 
-filter = np.arange(0, 2)
+
 color_list = ["black", "blue", "orange", "green", "yellow", "magenta", "purple", "red", "maroon"]
 
 measured_data_dict = collections.defaultdict(list)
 
 
-
+filter = np.arange(0, 2)
 for filt in filter:
 
 	sigmas = []
