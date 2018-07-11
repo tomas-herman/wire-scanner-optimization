@@ -72,18 +72,18 @@ color_list = ["black", "blue", "orange", "green", "yellow", "magenta", "purple",
 measured_data_dict = collections.defaultdict(list)
 
 
-filter = np.arange(0, 2)
+filter = np.arange(0, 6)
 for filt in filter:
 
 	sigmas = []
 	pms = []
 
-	counter = 25 #set to 1 normally
-	shot_max = 26 #set to 2 normally
+	counter = 1 #set to 1 normally
+	shot_max = 2 #set to 2 normally
 
 	while counter <= shot_max:
 		for folder in os.listdir("."):
-			if folder.startswith("R1"):
+			if folder.startswith("R2"):
 				if "Filter"+str(filt) in folder:
 					# print(folder)
 					files = glob.glob(os.path.join(folder,"*.txt")) 
@@ -99,10 +99,10 @@ for filt in filter:
 						if int(shot) == counter:
 							counter += 1
 							pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
-							print(pm)
-							if int(pm) > 249:
+							# print(pm)
+							if int(pm) > 50:
 								plot_profile(f)
-								print('>> sigma =', abs(popt[2]))
+								# print('>> sigma =', abs(popt[2]))
 								sigmas.append(abs(popt[2]))
 								pms.append(pm)
 
@@ -110,7 +110,7 @@ for filt in filter:
 	measured_data_dict[(str(filt),"pms")] = pms 
 	measured_data_dict[(str(filt),"sigmas")] = sigmas
 
-	plt.scatter(measured_data_dict[(str(filt),"pms")], measured_data_dict[(str(filt),"sigmas")], s=6, color=color_list[filt], label='Wirescanner data filter: ' + str(filt))
+	plt.scatter(measured_data_dict[(str(filt),"pms")], measured_data_dict[(str(filt),"sigmas")], s=9, color=color_list[filt], label='Wirescanner data filter: ' + str(filt))
 
 
 
