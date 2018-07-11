@@ -90,6 +90,21 @@ def get_profile(ring, plane, folder, ctime, shot):
         print('>> No WS data. Waiting for next cycle.')
         return 0
 
+def record_bct(ring, ctime):
+    if not os.path.exists(os.path.join(folder, "bct")):
+        os.makedirs(os.path.join(folder, "bct"))
+    folder_bct = os.path.join(folder, "bct")
+    param_bct = ["B" + ring + ".BCT-ST/Samples#samples", "B" + ring + ".BCT-ST/Samples#firstSampleTime", "B" + ring + ".BCT-ST/Samples#samplingTrain"]
+
+    with open(os.path.join(folder_bct, "BCT_" + ring + "_" + str(ctime)) + ".txt", "w") as bct_file:
+        intensity = japc.getParam("B" + ring + ".BCT-ST/Samples#samples")
+        first_sample_time = japc.getParam("B" + ring + ".BCT-ST/Samples#firstSampleTime")
+        sample_train = japc.getParam("B" + ring + ".BCT-ST/Samples#samplingTrain")
+        acq_time = np.linspace(first_sample_time, first_sample_time + len(intensity) - 1, len(intensity))
+
+        for i, t in zip(intensity, acq_time):
+            bct_file.write("%s %s \n" % (i, t))
+
 
 # Callback function
 def callback(param_name, new_value):
@@ -116,6 +131,7 @@ def callback(param_name, new_value):
         print('')
         print(">> Reading data")
         get_profile(ring, plane, folder, ctime, callback.counter)
+        record_bct(ring, ctime)
         pm += 10
         #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
     
