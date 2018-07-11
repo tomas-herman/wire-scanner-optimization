@@ -14,8 +14,8 @@ plane = str(sys.argv[3])
 wire_speed = sys.argv[4]
 
 ctime = 796
-filt = 1
-pm = 10
+filt = 5
+pm = 200
 
 # Time of the measurement
 time_stamp = time.strftime("%Y_%m_%d_%H_%M_%S")
@@ -96,7 +96,7 @@ def record_bct(ring, ctime):
     folder_bct = os.path.join(folder, "bct")
     param_bct = ["B" + ring + ".BCT-ST/Samples#samples", "B" + ring + ".BCT-ST/Samples#firstSampleTime", "B" + ring + ".BCT-ST/Samples#samplingTrain"]
 
-    with open(os.path.join(folder_bct, "BCT_" + ring + "_" + str(ctime)) + ".txt", "w") as bct_file:
+    with open(os.path.join(folder_bct, "BCT_" + ring + "_" + str(ctime) + "_shot" + str(int(callback.counter/3)) + "__" ) + ".txt", "w") as bct_file:
         intensity = japc.getParam("B" + ring + ".BCT-ST/Samples#samples")
         first_sample_time = japc.getParam("B" + ring + ".BCT-ST/Samples#firstSampleTime")
         sample_train = japc.getParam("B" + ring + ".BCT-ST/Samples#samplingTrain")
@@ -132,7 +132,7 @@ def callback(param_name, new_value):
         print(">> Reading data")
         get_profile(ring, plane, folder, ctime, callback.counter)
         record_bct(ring, ctime)
-        pm += 10
+        pm += 50
         #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
     
    
