@@ -46,8 +46,16 @@ def plot_profile(infile):
     data_raw_x = np.asarray(data[0])
     data_raw_y = np.asarray(data[1])
 
-    data_x = data_raw_x * 1e-3
-    data_y = data_raw_y - min(data_raw_y)
+    data_x_old = data_raw_x * 1e-3
+    data_y_old = data_raw_y - min(data_raw_y)
+
+    data_x = []
+    data_y = []
+
+    for x,y in zip(data_x_old,data_y_old):
+        if x > -30 and x < 0:
+            data_x.append(x)
+            data_y.append(y)
 
     # Gaussian fit
     popt, pcov = curve_fit(gauss, data_x, data_y)
@@ -103,15 +111,31 @@ for filt in filter:
 							if int(pm) > 50:
 								plot_profile(f)
 								# print('>> sigma =', abs(popt[2]))
-								sigmas.append(abs(popt[2]))
-								pms.append(pm)
 
+								# Plotting individual profiles
+								# plt.figure(1)
+								# plt.plot(data_x, gauss(data_x, popt[0], popt[1], popt[2]), label="fit", lw=0.8, color='green')
+								# plt.plot(data_x, data_y, label="data", color="black")
+								# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+								# plt.title("Filter: " + str(filt) + " Gain: " + str(pm))
+
+								# plt.savefig("sigma/profile_filter_" + str(filt) + "_shot_" + shot + ".png", bbox_inches='tight')
+								# plt.clf()
+
+								pms.append(pm)
+								if abs(popt[2]) < 4:
+									sigmas.append(abs(popt[2]))
+								else:
+									sigmas.append(None)
+									
 
 	measured_data_dict[(str(filt),"pms")] = pms 
 	measured_data_dict[(str(filt),"sigmas")] = sigmas
 
-	plt.scatter(measured_data_dict[(str(filt),"pms")], measured_data_dict[(str(filt),"sigmas")], s=9, color=color_list[filt], label='Wirescanner data filter: ' + str(filt))
-
+	plt.figure(2)
+	plt.plot(measured_data_dict[(str(filt),"pms")], measured_data_dict[(str(filt),"sigmas")], color=color_list[filt], label='Wirescanner data filter: ' + str(filt))
+	# For scatter púlot
+	# plt.scatter(measured_data_dict[(str(filt),"pms")], measured_data_dict[(str(filt),"sigmas")], s=9, color=color_list[filt], label='Wirescanner data filter: ' + str(filt))
 
 
 
