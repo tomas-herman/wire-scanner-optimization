@@ -88,12 +88,17 @@ def plot_profile(infile):
 color_list = sns.color_palette("hls", 7)
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 
+run = [1, 2]
+
+# for r in run:
+
 measured_data_dict = collections.defaultdict(list)
 
-
+mean_bct_sum = 0
+mean_bct_length = 0
 ring = "R2"
-folder_profiles = os.path.join(os.getcwd(), ring + "_speed_15_" + "profiles")
-filter = [0,2,3,4,5]
+folder_profiles = os.path.join(os.getcwd(), ring + "_speed_15_" + "Run_" + r + "_profiles")
+filter = [0] #,2,3,4,5]
 for filt in filter:
 
 	sigmas = []
@@ -108,73 +113,86 @@ for filt in filter:
 		for folder in os.listdir("."):
 			if folder.startswith(ring):
 				if "Filter"+str(filt) in folder:
-					# print(folder)
-					files = glob.glob(os.path.join(folder,"*.txt")) 
-					#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
-					# print(files) 
-					# print(" ")
-					for f in files:
-						shot = f[f.find('shot') + 4: f.find('shot') + 7].strip("_")
-						# print(shot)
-						# print(shot_max)
-						if shot_max < int(shot): 
-							shot_max = int(shot)
-						if int(shot) == counter:
-							
-							pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
-							# print(pm)
-							if int(pm) > 50:
-								plot_profile(f)
-								# print('>> sigma =', abs(popt[2]))
-								# print(gauss(np.asarray(data_x), *popt))
+					if "Run"+str(r) in folder:
+						# print(folder)
+						files = glob.glob(os.path.join(folder,"*.txt")) 
+						#files = glob.glob(os.path.join(os.getcwd(),folder,"*.txt"))  # if location of data is in different folder 
+						# print(files) 
+						# print(" ")
+						for f in files:
+							shot = f[f.find('shot') + 4: f.find('shot') + 7].strip("_")
+							# print(shot)
+							# print(shot_max)
+							if shot_max < int(shot): 
+								shot_max = int(shot)
+							if int(shot) == counter:
+								
+								pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
+								# print(pm)
+								if int(pm) > 50:
+									plot_profile(f)
+									# print('>> sigma =', abs(popt[2]))
+									# print(gauss(np.asarray(data_x), *popt))
 
-								# # Plotting individual profiles-----------------------------------------------------------------------------------------
-								# plt.figure(1)
-								# plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
-								# plt.plot(data_x, data_y, label="data", color="black")
-								# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-								# plt.title("Filter: " + filter_list[filt] + " PM gain: " + str(pm))
+									# # Plotting individual profiles-----------------------------------------------------------------------------------------
+									# plt.figure(1)
+									# plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
+									# plt.plot(data_x, data_y, label="data", color="black")
+									# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+									# plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)))
 
-								# if not os.path.exists(folder_profiles):
-								# 	print("Creating folder: " + folder_profiles)
-								# 	os.makedirs(folder_profiles)
+									# plt.xlabel('Position [mm]')
+									# plt.ylabel(r'Current [mA]')
 
-								# plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
-								# plt.clf()
+									# if not os.path.exists(folder_profiles):
+									# 	print("Creating folder: " + folder_profiles)
+									# 	os.makedirs(folder_profiles)
 
-								# Accesing intensity for given shot ---------------------------------------------------------------------------------------
-								files_bct = glob.glob(os.path.join(folder+"/bct","*.txt")) 
-								for f_bct in files_bct:
-									
-									shot_bct = f_bct[f_bct.find('shot') + 4: f_bct.find('shot') + 7].strip("_")
-									
-									if int(shot_bct) == counter:
-										data_bct = get_column(f_bct)
-										data_time = np.asarray(data_bct[1])
-										data_bct = np.asarray(data_bct[0])
+									# plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
+									# plt.clf()
 
-										for t,bct in zip(data_time,data_bct):
-											if t == 796:
-												bcts.append(bct)
-											
-								pms.append(pm)
-								if abs(popt[2]) < 4:
-									sigmas.append(abs(popt[2]))
-									sigmas_erros.append(abs(perr[2]))
-								else:
-									sigmas.append(float('NaN'))
-									sigmas_erros.append(float('NaN'))
+									# Accesing intensity for given shot ---------------------------------------------------------------------------------------
+									files_bct = glob.glob(os.path.join(folder+"/bct","*.txt")) 
+									for f_bct in files_bct:
+										
+										shot_bct = f_bct[f_bct.find('shot') + 4: f_bct.find('shot') + 7].strip("_")
+										
+										if int(shot_bct) == counter:
+											data_bct = get_column(f_bct)
+											data_time = np.asarray(data_bct[1])
+											data_bct = np.asarray(data_bct[0])
 
-							counter += 1
+											for t,bct in zip(data_time,data_bct):
+												if t == 796:
+													bcts.append(bct)
+												
+									pms.append(pm)
+									if abs(popt[2]) < 4:
+										sigmas.append(abs(popt[2]))
+										sigmas_erros.append(abs(perr[2]))
+									else:
+										sigmas.append(float('NaN'))
+										sigmas_erros.append(float('NaN'))
+
+								counter += 1
 									
 
 	measured_data_dict[(str(filt),"pms")] = pms 
 	measured_data_dict[(str(filt),"sigmas")] = sigmas
 	measured_data_dict[(str(filt),"sigmas_erros")] = sigmas_erros
 	measured_data_dict[(str(filt),"bcts")] = bcts
-	measured_data_dict[(str(filt),"sigmas_normalised")] = np.array(sigmas)/np.array(bcts)
-	measured_data_dict[(str(filt),"sigmas_erros_normalised")] = np.array(sigmas_erros)/np.array(bcts)	
+	measured_data_dict[(str(filt),"avg_bcts")] = sum(bcts)/float(len(bcts))
+	mean_bct_sum = mean_bct_sum + measured_data_dict[(str(filt),"avg_bcts")]
+	mean_bct_length = mean_bct_length + 1
 
+mean_bct = mean_bct_sum/mean_bct_length
+
+
+for filt in filter:
+	measured_data_dict[(str(filt),"sigmas_normalised")] = mean_bct * np.asarray(measured_data_dict[(str(filt),"sigmas")])/np.asarray(measured_data_dict[(str(filt),"bcts")])
+	measured_data_dict[(str(filt),"sigmas_erros_normalised")] = mean_bct * np.asarray(measured_data_dict[(str(filt),"sigmas_erros")])/np.asarray(measured_data_dict[(str(filt),"bcts")])
+
+	# print(measured_data_dict[(str(filt),"sigmas_normalised")])
 
 	plt.figure(2)
 	# # For not normalised data---------------------------------
@@ -200,7 +218,7 @@ for filt in filter:
 fig = plt.gcf()
 fig.set_size_inches(15, 9)
 # plt.plot(data_x, gauss(data_x, popt[0], popt[1], popt[2]), label="fit", lw=0.8, color='green')
-plt.title("Profile dependance on PM gain for different filters")
+plt.title("Profile dependance on PM gain for different filters. Average beam intensity: " + str(round(mean_bct,3)) + " ???")
 plt.xlabel('PM gain [%]')
 plt.ylabel(r'sigma [mm]')
 # plt.xlim([-30,30])
@@ -210,13 +228,3 @@ plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 plt.savefig('sigma_on_pm.png', bbox_inches='tight')
 
 
-
-
-
-
-# evenly sampled time at 200ms intervals
-# t = np.arange(0., 5., 0.2)
-# t = np.asarray(data[1])
-
-# red dashes, blue squares and green triangles
-# plt.plot(t, t, 'r--', t, t**2, 'bs', t, t**3, 'g^')

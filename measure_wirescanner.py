@@ -14,8 +14,9 @@ plane = str(sys.argv[3])
 wire_speed = sys.argv[4]
 
 ctime = 796
-filt = 5
-pm = 200
+filt = 0
+pm = 100
+run = 1
 
 # Time of the measurement
 time_stamp = time.strftime("%Y_%m_%d_%H_%M_%S")
@@ -24,7 +25,7 @@ print(">> Script launched at:", time_stamp)
 print(" ")
 
 # Create folder
-folder = os.path.join(os.getcwd(), ring + plane + '_' + "Filter" + str(filt) + '_' + time_stamp)
+folder = os.path.join(os.getcwd(), ring + plane + '_' + "Filter" + str(filt) + '_' + "Speed" + wire_speed + "_" + "Run" + run + "__" + time_stamp)
 
 if not os.path.exists(folder):
 	os.makedirs(folder)
