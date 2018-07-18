@@ -14,9 +14,9 @@ plane = str(sys.argv[3])
 wire_speed = sys.argv[4]
 
 ctime = 796
-filt = 0
-pm = 100
-run = 1
+filt = 5
+pm = 50
+run = 2
 
 # Time of the measurement
 time_stamp = time.strftime("%Y_%m_%d_%H_%M_%S")
@@ -25,7 +25,7 @@ print(">> Script launched at:", time_stamp)
 print(" ")
 
 # Create folder
-folder = os.path.join(os.getcwd(), ring + plane + '_' + "Filter" + str(filt) + '_' + "Speed" + wire_speed + "_" + "Run" + run + "__" + time_stamp)
+folder = os.path.join(os.getcwd(), ring + plane + '_' + "Filter" + str(filt) + '_' + "Speed" + str(wire_speed) + "_" + "Run" + str(run) + "__" + time_stamp)
 
 if not os.path.exists(folder):
 	os.makedirs(folder)
@@ -80,7 +80,7 @@ def get_profile(ring, plane, folder, ctime, shot):
         l=0
         data_x = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1")
         data_y = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projDataSet1")
-        with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_time" + str(ctime)  + "_speed" + str(wire_speed) + "_filter" + str(filt) + "_shot" + str(int(callback.counter/3)) + "__" + "_pm" + str(pm) + "__" + ".txt"), 'w') as fout:
+        with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_time" + str(ctime)  + "_speed" + str(wire_speed) + "_filter" + str(filt) + "_shot" + str(int(callback.counter/3)) + "__" + "_pm" + str(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain")) + "__" + ".txt"), 'w') as fout:
             for i, j in zip(data_x, data_y):
                 if l < 3: 
                     print(i, j)
