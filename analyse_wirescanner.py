@@ -132,7 +132,7 @@ for r in run:
 										
 										pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
 										# print(pm)
-										if int(pm) > 60:
+										if int(pm) > 40:
 											plot_profile(f)
 											# print('>> sigma =', abs(popt[2]))
 											# print(gauss(np.asarray(data_x), *popt))
