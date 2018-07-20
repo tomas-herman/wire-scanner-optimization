@@ -89,7 +89,7 @@ color_list = sns.color_palette("hls", 9)
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 
 run = [1,2]
-filter = [0,1,2,3,4,5,6] #,7]
+filter = [0,1,2,3,4,5,6,7]
 ring = "R2"
 speed = "10"
 measured_data_dict = collections.defaultdict(list)
@@ -225,8 +225,8 @@ for filt in filter:
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 
 	# plt.show()
-	plt.savefig("sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
-	plt.clf()
+plt.savefig("all_sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+	# plt.clf()
 
 
 
