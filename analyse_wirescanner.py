@@ -89,7 +89,7 @@ color_list = sns.color_palette("hls", 9)
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 
 run = [1,2]
-filter = [0,1,2,3,4,5]#,6,7]
+filter = [0,1,2,3,4,5,6] #,7]
 ring = "R2"
 speed = "10"
 measured_data_dict = collections.defaultdict(list)
@@ -138,21 +138,21 @@ for r in run:
 											# print(gauss(np.asarray(data_x), *popt))
 
 											# # Plotting individual profiles-----------------------------------------------------------------------------------------
-											plt.figure(1)
-											plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
-											plt.plot(data_x, data_y, label="data", color="black")
-											plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-											plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)))
+											# plt.figure(1)
+											# plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
+											# plt.plot(data_x, data_y, label="data", color="black")
+											# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+											# plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)))
 
-											plt.xlabel('Position [mm]')
-											plt.ylabel(r'Current [mA]')
+											# plt.xlabel('Position [mm]')
+											# plt.ylabel(r'Current [mA]')
 
-											if not os.path.exists(folder_profiles):
-												print("Creating folder: " + folder_profiles)
-												os.makedirs(folder_profiles)
+											# if not os.path.exists(folder_profiles):
+											# 	print("Creating folder: " + folder_profiles)
+											# 	os.makedirs(folder_profiles)
 
-											plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
-											plt.clf()
+											# plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
+											# plt.clf()
 
 											# Accesing intensity for given shot ---------------------------------------------------------------------------------------
 											files_bct = glob.glob(os.path.join(folder+"/bct","*.txt")) 
@@ -169,7 +169,7 @@ for r in run:
 														if t == 796:
 															bcts.append(bct)
 														
-											pms.append(pm)
+											pms.append(int(pm))
 											if abs(popt[2]) < 4:
 												sigmas.append(abs(popt[2]))
 												sigmas_erros.append(abs(perr[2]))
@@ -216,16 +216,16 @@ for filt in filter:
 		else:
 			plt.scatter(measured_data_dict[(str(r),str(filt),"pms")], measured_data_dict[(str(r),str(filt),"sigmas_normalised")], s=20, color=color_list[filt], label= None)
 		
-		fig = plt.gcf()
+	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
 	plt.title("Profile dependance on PM gain for Filter: " + filter_list[filt] + ", Average beam intensity: " + str(round(mean_bct,3)) + " ???")
 	plt.xlabel('PM gain [%]')
 	plt.ylabel(r'sigma [mm]')
-	# plt.xlim([-30,30])
+	plt.xlim([0,1050])
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 
 	# plt.show()
-	plt.savefig("sigma_on_pm_filter" + str(filt) + ".png", bbox_inches='tight')
+	plt.savefig("sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	plt.clf()
 
 
