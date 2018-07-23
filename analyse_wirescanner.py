@@ -88,8 +88,9 @@ def plot_profile(infile):
 color_list = sns.color_palette("hls", 9)
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 
-run = [1,2]
+run = [1,2,3]
 filter = [0,1,2,3,4,5,6,7]
+# filter = [0,2,3,4,5,7]
 ring = "R2"
 speed = "10"
 measured_data_dict = collections.defaultdict(list)
@@ -104,7 +105,7 @@ for r in run:
 	for filt in filter:
 
 		sigmas = []
-		sigmas_erros = []
+		sigmas_errors = []
 		pms = []
 		bcts = []
 
@@ -169,20 +170,21 @@ for r in run:
 														if t == 796:
 															bcts.append(bct)
 														
-											pms.append(int(pm))
+											pms.append(float(pm))
 											if abs(popt[2]) < 4:
 												sigmas.append(abs(popt[2]))
-												sigmas_erros.append(abs(perr[2]))
+												sigmas_errors.append(abs(perr[2]))
 											else:
+												print("One of the sigma values is too large!")
 												sigmas.append(float('NaN'))
-												sigmas_erros.append(float('NaN'))
+												sigmas_errors.append(float('NaN'))
 
 										counter += 1
 										
 
 		measured_data_dict[(str(r),str(filt),"pms")] = pms 
 		measured_data_dict[(str(r),str(filt),"sigmas")] = sigmas
-		measured_data_dict[(str(r),str(filt),"sigmas_erros")] = sigmas_erros
+		measured_data_dict[(str(r),str(filt),"sigmas_errors")] = sigmas_errors
 		measured_data_dict[(str(r),str(filt),"bcts")] = bcts
 		measured_data_dict[(str(r),str(filt),"avg_bcts")] = sum(bcts)/float(len(bcts))
 		mean_bct_sum = mean_bct_sum + measured_data_dict[(str(r),str(filt),"avg_bcts")]
@@ -197,17 +199,17 @@ mean_bct = mean_bct_sum_sum/mean_bct_length_length
 for filt in filter:
 	for r in run:	
 		measured_data_dict[(str(r),str(filt),"sigmas_normalised")] = mean_bct * np.asarray(measured_data_dict[(str(r),str(filt),"sigmas")])/np.asarray(measured_data_dict[(str(r),str(filt),"bcts")])
-		measured_data_dict[(str(r),str(filt),"sigmas_erros_normalised")] = mean_bct * np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_erros")])/np.asarray(measured_data_dict[(str(r),str(filt),"bcts")])
+		measured_data_dict[(str(r),str(filt),"sigmas_errors_normalised")] = mean_bct * np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_errors")])/np.asarray(measured_data_dict[(str(r),str(filt),"bcts")])
 
 		# print(measured_data_dict[(str(r),str(filt),"sigmas_normalised")])
 
 		plt.figure(2)
 		# # For not normalised data---------------------------------
-		# plt.errorbar(measured_data_dict[(str(r),str(filt),"pms")], measured_data_dict[(str(r),str(filt),"sigmas")], yerr = measured_data_dict[(str(r),str(filt),"sigmas_erros")], color=color_list[filt], label='Wirescanner data filter: ' + filter_list[filt])
-		# plt.fill_between(np.asarray(measured_data_dict[(str(r),str(filt),"pms")]), np.asarray(measured_data_dict[(str(r),str(filt),"sigmas")])-np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_erros")]), np.asarray(measured_data_dict[(str(r),str(filt),"sigmas")])+np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_erros")]),facecolor=color_list[filt],alpha=0.5)
+		# plt.errorbar(measured_data_dict[(str(r),str(filt),"pms")], measured_data_dict[(str(r),str(filt),"sigmas")], yerr = measured_data_dict[(str(r),str(filt),"sigmas_errors")], color=color_list[filt], label='Wirescanner data filter: ' + filter_list[filt])
+		# plt.fill_between(np.asarray(measured_data_dict[(str(r),str(filt),"pms")]), np.asarray(measured_data_dict[(str(r),str(filt),"sigmas")])-np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_errors")]), np.asarray(measured_data_dict[(str(r),str(filt),"sigmas")])+np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_errors")]),facecolor=color_list[filt],alpha=0.5)
 		# # # For data normalised with intensity----------------------
-		# plt.errorbar(measured_data_dict[(str(r),str(filt),"pms")], measured_data_dict[(str(r),str(filt),"sigmas_normalised")], yerr = measured_data_dict[(str(r),str(filt),"sigmas_erros_normalised")], color=color_list[filt], label='Wirescanner data filter: ' + filter_list[filt])
-		# plt.fill_between(np.asarray(measured_data_dict[(str(r),str(filt),"pms")]), np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_normalised")])-np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_erros_normalised")]), np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_normalised")])+np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_erros_normalised")]),facecolor=color_list[filt],alpha=0.5)
+		# plt.errorbar(measured_data_dict[(str(r),str(filt),"pms")], measured_data_dict[(str(r),str(filt),"sigmas_normalised")], yerr = measured_data_dict[(str(r),str(filt),"sigmas_errors_normalised")], color=color_list[filt], label='Wirescanner data filter: ' + filter_list[filt])
+		# plt.fill_between(np.asarray(measured_data_dict[(str(r),str(filt),"pms")]), np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_normalised")])-np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_errors_normalised")]), np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_normalised")])+np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_errors_normalised")]),facecolor=color_list[filt],alpha=0.5)
 
 
 		# For scatter plot
@@ -220,6 +222,7 @@ for filt in filter:
 	fig.set_size_inches(15, 9)
 	plt.title("Profile dependance on PM gain for Filter: " + filter_list[filt] + ", Average beam intensity: " + str(round(mean_bct,3)) + " ???")
 	plt.xlabel('PM gain [%]')
+	plt.xticks(np.arange(0, 1051, step=50))
 	plt.ylabel(r'sigma [mm]')
 	plt.xlim([0,1050])
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
@@ -229,5 +232,47 @@ plt.savefig("all_sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bb
 	# plt.clf()
 
 
+for filt in filter:
+	sigmas_final = []
+	sigmas_final_errors = []
+	pms_final = []
+	pms_final_errors = []
+	for i in range (0,20):
 
+		all_sigmas = []
+		all_pms = []
+		for r in run:
+			all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas_normalised")][i])
+			all_pms.append(measured_data_dict[(str(r),str(filt),"pms")][i])
+		
+		# measured_data_dict[(str(i), str(filt),"all_sigmas")] = all_sigmas 
+		sigmas_final.append(np.mean(all_sigmas))
+		sigmas_final_errors.append(np.std(all_sigmas,ddof=1))
+
+		pms_final.append(np.mean(all_pms))
+		pms_final_errors.append(np.std(all_pms,ddof=1))
+		
+	measured_data_dict[(str(filt),"sigmas_final")] = sigmas_final
+	measured_data_dict[(str(filt),"sigmas_final_errors")] = sigmas_final_errors
+
+	measured_data_dict[(str(filt),"pms_final")] = pms_final
+	measured_data_dict[(str(filt),"pms_final_errors")] = pms_final_errors
+
+
+
+	plt.figure(3)
+
+	plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_final_errors")], color=color_list[filt], fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
+	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
+
+	fig = plt.gcf()
+	fig.set_size_inches(15, 9)
+	plt.title("Profile dependance on PM gain for Filter: " + filter_list[filt] + ", Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	plt.xlabel('PM gain [%]')
+	plt.xticks(np.arange(0, 1051, step=50))
+	plt.ylabel(r'sigma [mm]')
+	plt.xlim([0,1050])
+	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+plt.savefig("all_new_sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+	# plt.clf()
 
