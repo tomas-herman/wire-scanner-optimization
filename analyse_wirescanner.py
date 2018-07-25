@@ -137,27 +137,27 @@ for r in run:
 										
 										pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
 										# print(pm)
-										if int(pm) > 60:
+										if int(pm) > 40:
 											plot_profile(f)
 											# print('>> sigma =', abs(popt[2]))
 											# print(gauss(np.asarray(data_x), *popt))
 
 											# # Plotting individual profiles-----------------------------------------------------------------------------------------
-											# plt.figure(1)
-											# plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
-											# plt.plot(data_x, data_y, label="data", color="black")
-											# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-											# plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)))
+											plt.figure(1)
+											plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
+											plt.plot(data_x, data_y, label="data", color="black")
+											plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+											plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)))
 
-											# plt.xlabel('Position [mm]')
-											# plt.ylabel(r'Current [mA]')
+											plt.xlabel('Position [mm]')
+											plt.ylabel(r'Current [mA]')
 
-											# if not os.path.exists(folder_profiles):
-											# 	print("Creating folder: " + folder_profiles)
-											# 	os.makedirs(folder_profiles)
+											if not os.path.exists(folder_profiles):
+												print("Creating folder: " + folder_profiles)
+												os.makedirs(folder_profiles)
 
-											# plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
-											# plt.clf()
+											plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
+											plt.clf()
 
 											# Accesing intensity for given shot ---------------------------------------------------------------------------------------
 											files_bct = glob.glob(os.path.join(folder+"/bct","*.txt")) 
@@ -242,6 +242,9 @@ for filt in filter:
 	sigmas_final = []
 	sigmas_final_errors = []
 
+	sigmas_areas_final = []
+	sigmas_areas_final_errors = []
+
 	pms_final = []
 	pms_final_errors = []
 
@@ -250,17 +253,21 @@ for filt in filter:
 	for i in range (0,19):
 
 		all_sigmas = []
+		all_sigmas_areas = []
 		all_pms = []
 		all_bcts = []
 		for r in run:
-			# all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas_normalised")][i])
-			all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas")][i])			
+			all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas_normalised")][i])
+			all_sigmas_areas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas")][i])			
 			all_pms.append(measured_data_dict[(str(r),str(filt),"pms")][i])
 			all_bcts.append(measured_data_dict[(str(r),str(filt),"bcts")][i])
 		
 
 		sigmas_final.append(np.mean(all_sigmas))
 		sigmas_final_errors.append(np.std(all_sigmas,ddof=1))
+
+		sigmas_areas_final.append(np.mean(all_sigmas_areas))
+		sigmas_areas_final_errors.append(np.std(all_sigmas_areas,ddof=1))		
 
 		pms_final.append(np.mean(all_pms))
 		pms_final_errors.append(np.std(all_pms,ddof=1))
@@ -270,6 +277,9 @@ for filt in filter:
 		
 	measured_data_dict[(str(filt),"sigmas_final")] = sigmas_final
 	measured_data_dict[(str(filt),"sigmas_final_errors")] = sigmas_final_errors
+
+	measured_data_dict[(str(filt),"sigmas_areas_final")] = sigmas_areas_final
+	measured_data_dict[(str(filt),"sigmas_areas_final_errors")] = sigmas_areas_final_errors
 
 	measured_data_dict[(str(filt),"pms_final")] = pms_final
 	measured_data_dict[(str(filt),"pms_final_errors")] = pms_final_errors
@@ -281,43 +291,61 @@ for filt in filter:
 	plt.figure(3)
 
 	plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
-	# plt.errorbar(measured_data_dict[(str(filt),"bcts_final")], measured_data_dict[(str(filt),"sigmas_final")], xerr = measured_data_dict[(str(filt),"bcts_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
-	plt.title("Profile * Amplitude dependance on PM gain for Filter: " + filter_list[filt] + ", Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	plt.title("Profile dependance on PM gain." + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
 	plt.xlabel('PM gain [%]')
 	# plt.xlabel('Intensity')
 	plt.xticks(np.arange(0, 1051, step=50))
 	# plt.ylabel(r'sigma [mm]'))
-	plt.ylabel(r'sigma * Amplitude [mm * mA]')
+	plt.ylabel(r'Sigma [mm]')
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-	# plt.savefig("all_sigma_times_area_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+	# plt.savefig("sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
 	plt.figure(4)
 
-	# plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
-	plt.errorbar(measured_data_dict[(str(filt),"bcts_final")], measured_data_dict[(str(filt),"sigmas_final")], xerr = measured_data_dict[(str(filt),"bcts_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
+	plt.errorbar(measured_data_dict[(str(filt),"bcts_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"bcts_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
-	plt.title("Profile * Amplitude dependance on intensity for Filter: " + filter_list[filt] + ", Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	plt.title("Profile * Amplitude dependance on intensity."  + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
 	# plt.xlabel('PM gain [%]')
-	plt.xlabel('Intensity')
+	plt.xlabel('Intensity [???]')
 	# plt.xticks(np.arange(0, 1051, step=50))
 	# plt.ylabel(r'sigma [mm]'))
-	plt.ylabel(r'sigma * Amplitude [mm * mA]')
+	plt.ylabel(r'Sigma * Amplitude [mm * mA]')
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-	# plt.savefig("all_sigma_times_area_on_intensity_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+	# plt.savefig("sigma_times_area_on_intensity_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+	# plt.clf()
+
+	plt.figure(5)
+
+	plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
+	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
+
+	fig = plt.gcf()
+	fig.set_size_inches(15, 9)
+	plt.title("Profile * Amplitude dependance on PM gain." + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	plt.xlabel('PM gain [%]')
+	# plt.xlabel('Intensity')
+	plt.xticks(np.arange(0, 1051, step=50))
+	# plt.ylabel(r'sigma [mm]'))
+	plt.ylabel(r'Sigma * Amplitude [mm * mA]')
+	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+	# plt.savefig("sigma_times_area_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
 
-plt.figure(3)
-plt.savefig("all_sigma_times_area_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+# plt.figure(3)
+# plt.savefig("all_sigma_on_pm" + "_speed" + speed + ".png", bbox_inches='tight')
 
-plt.figure(4)
-plt.savefig("all_sigma_times_area_on_intensity_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+# plt.figure(4)
+# plt.savefig("all_sigma_times_area_on_intensity" + "_speed" + speed + ".png", bbox_inches='tight')
+
+# plt.figure(5)
+# plt.savefig("all_sigma_times_area_on_pm" + "_speed" + speed + ".png", bbox_inches='tight')
 
