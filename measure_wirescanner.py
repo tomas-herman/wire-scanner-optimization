@@ -14,7 +14,7 @@ plane = str(sys.argv[3])
 wire_speed = sys.argv[4]
 
 ctime = 796
-filt = 2
+filt = 3
 pm = 50
 run = 1
 
@@ -80,12 +80,14 @@ def get_profile(ring, plane, folder, ctime, shot):
         l=0
         data_x = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1")
         data_y = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projDataSet1")
+        data_z = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#ctrTStampSet1")
+
         with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_time" + str(ctime)  + "_speed" + str(wire_speed) + "_filter" + str(filt) + "_shot" + str(int(callback.counter/3)) + "__" + "_pm" + str(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain")) + "__" + ".txt"), 'w') as fout:
-            for i, j in zip(data_x, data_y):
+            for i, j, k in zip(data_x, data_y, data_z):
                 if l < 3: 
-                    print(i, j)
+                    print(i, j, k)
                     l += 1
-                fout.write("{:.12E}".format(i) + "  " + "{:.12E}".format(j) + '\n')
+                fout.write("{:.12E}".format(i) + "  " + "{:.12E}".format(j)  + '\n')
         return 1
     except TypeError:
         print('>> No WS data. Waiting for next cycle.')
