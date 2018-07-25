@@ -14,7 +14,7 @@ plane = str(sys.argv[3])
 wire_speed = sys.argv[4]
 
 ctime = 796
-filt = 3
+filt = 2
 pm = 50
 run = 1
 
