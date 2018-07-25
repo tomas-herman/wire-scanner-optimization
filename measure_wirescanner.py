@@ -87,7 +87,7 @@ def get_profile(ring, plane, folder, ctime, shot):
                 if l < 3: 
                     print(i, j, k)
                     l += 1
-                fout.write("{:.12E}".format(i) + "  " + "{:.12E}".format(j)  + '\n')
+                fout.write("{:.12E}".format(i) + "  " + "{:.12E}".format(j) + "  " + "{:.12E}".format(k) + '\n')
         return 1
     except TypeError:
         print('>> No WS data. Waiting for next cycle.')
