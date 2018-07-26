@@ -226,7 +226,7 @@ for filt in filter:
 
 	bcts_final = []
 	bcts_final_errors = []
-	for i in range (0,19):
+	for i in range (0,20):
 		all_sigmas = []
 		all_sigmas_areas = []
 		all_pms = []
@@ -272,18 +272,18 @@ for filt in filter:
 	plt.xticks(np.arange(0, 1051, step=50))
 	plt.ylabel(r'Sigma [mm]')
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-	# plt.savefig("sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
-	# plt.clf()
+	plt.savefig("sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+	plt.clf()
 
-	plt.figure(4)
-	plt.errorbar(measured_data_dict[(str(filt),"bcts_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"bcts_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
-	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
-	fig = plt.gcf()
-	fig.set_size_inches(15, 9)
-	plt.title("Profile * Amplitude dependance on intensity."  + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
-	plt.xlabel('Intensity [???]')
-	plt.ylabel(r'Sigma * Amplitude [mm * mA]')
-	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+	# plt.figure(4)
+	# plt.errorbar(measured_data_dict[(str(filt),"bcts_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"bcts_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
+	# # plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
+	# fig = plt.gcf()
+	# fig.set_size_inches(15, 9)
+	# plt.title("Profile * Amplitude dependance on intensity."  + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	# plt.xlabel('Intensity [???]')
+	# plt.ylabel(r'Sigma * Amplitude [mm * mA]')
+	# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 	# plt.savefig("sigma_times_area_on_intensity_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
@@ -300,12 +300,12 @@ for filt in filter:
 	# plt.savefig("sigma_times_area_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
-plt.figure(3)
-plt.savefig("all_sigma_on_pm" + "_speed" + speed + ".png", bbox_inches='tight')
+# plt.figure(3)
+# plt.savefig("all_sigma_on_pm" + "_speed" + speed + ".png", bbox_inches='tight')
 
-plt.figure(4)
-plt.savefig("all_sigma_times_area_on_intensity" + "_speed" + speed + ".png", bbox_inches='tight')
+# # plt.figure(4)
+# # plt.savefig("all_sigma_times_area_on_intensity" + "_speed" + speed + ".png", bbox_inches='tight')
 
-plt.figure(5)
-plt.savefig("all_sigma_times_area_on_pm" + "_speed" + speed + ".png", bbox_inches='tight')
+# plt.figure(5)
+# plt.savefig("all_sigma_times_area_on_pm" + "_speed" + speed + ".png", bbox_inches='tight')
 
