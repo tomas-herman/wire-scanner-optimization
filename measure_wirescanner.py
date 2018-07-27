@@ -12,23 +12,23 @@ user = "PSB.USER.MD5"
 ring = "R2"
 plane = "H"
 
-speed = ["10","15"]
-run = [2,3]
-filter = [0,1]
+speeds = [15]
+runs = [2]
+filters = [2]
 
 # Start pyjapc
 japc = pyjapc.PyJapc()
 japc.setSelector(user)
 japc.rbacLogin()
 
-for s in speed:
-    for r in run:
-        for f in filter:
+for s in speeds:
+    for r in runs:
+        for f in filters:
 
-            wire_speed = s
+            wire_speed = str(s)
             ctime = 796
             filt = f
-            pm = 50
+            pm = 100
             run = r
 
 
@@ -83,6 +83,7 @@ for s in speed:
                 #print(">> Photomultiplier gain set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain"))
                 print(">> Photomultiplier gain set to (not measured!):", pm)
                 print(">> Filter set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#pmFilter"))
+                print(">> Run: " + str(r))
 
 
             def get_profile(ring, plane, folder, ctime, shot):
@@ -153,10 +154,10 @@ for s in speed:
             japc.startSubscriptions()
 
 
-            callback.counter = 0
+            callback.counter = 3
 
 
-            while pm <= 51:
+            while pm <= 101:
                 time.sleep(0.5)
             else:
                 time.sleep(1)
