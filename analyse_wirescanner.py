@@ -77,13 +77,13 @@ def plot_profile(infile):
 color_list = plt.get_cmap('Dark2')
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 
-run = [1,2,3]
+run = [1]
 filter = [0,1,2,3,4,5,6,7]
 # filter = [0,2,3,4,5,7]
 # filter = [2,3,4,5]
 # filter = [1,6]
 ring = "R2"
-speed = "10"
+speed = "15"
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
@@ -164,6 +164,7 @@ for r in run:
 											else:
 												print("One of the sigma values is too large!")
 												sigmas.append(float('NaN'))
+												sigmas_areas.append(float('NaN'))
 												
 										counter += 1
 										
@@ -272,8 +273,8 @@ for filt in filter:
 	plt.xticks(np.arange(0, 1051, step=50))
 	plt.ylabel(r'Sigma [mm]')
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-	plt.savefig("sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
-	plt.clf()
+	# plt.savefig("sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+	# plt.clf()
 
 	# plt.figure(4)
 	# plt.errorbar(measured_data_dict[(str(filt),"bcts_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"bcts_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
@@ -300,8 +301,8 @@ for filt in filter:
 	# plt.savefig("sigma_times_area_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
-# plt.figure(3)
-# plt.savefig("all_sigma_on_pm" + "_speed" + speed + ".png", bbox_inches='tight')
+plt.figure(3)
+plt.savefig("all_sigma_on_pm" + "_speed" + speed + ".png", bbox_inches='tight')
 
 # # plt.figure(4)
 # # plt.savefig("all_sigma_times_area_on_intensity" + "_speed" + speed + ".png", bbox_inches='tight')
