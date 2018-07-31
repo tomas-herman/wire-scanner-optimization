@@ -8,19 +8,21 @@ import time
 import warnings
 
 # Settings
-user = "PSB.USER.MD5"
+user = "PSB.USER.MD3"
 ring = "R2"
-plane = "H"
 
 speeds = [15]
-runs = [2]
-filters = [2]
+runs = [7]
+filters = [6]
+planes = ["H","V"]
 
 # Start pyjapc
 japc = pyjapc.PyJapc()
 japc.setSelector(user)
 japc.rbacLogin()
 
+for p in planes:
+plane = p
 for s in speeds:
     for r in runs:
         for f in filters:
@@ -28,7 +30,7 @@ for s in speeds:
             wire_speed = str(s)
             ctime = 796
             filt = f
-            pm = 100
+            pm = 50
             run = r
 
 
@@ -154,10 +156,10 @@ for s in speeds:
             japc.startSubscriptions()
 
 
-            callback.counter = 3
+            callback.counter = 0
 
 
-            while pm <= 101:
+            while pm <= 51:
                 time.sleep(0.5)
             else:
                 time.sleep(1)
