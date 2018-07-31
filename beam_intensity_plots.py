@@ -36,10 +36,10 @@ def get_column(infile):
 color_list = sns.color_palette("hls", 9)
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 
-run = [1,2,3]
+run = [1]
 filter = [0,1,2,3,4,5,6,7]
 ring = "R2"
-speed = "10"
+speed = "15"
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
