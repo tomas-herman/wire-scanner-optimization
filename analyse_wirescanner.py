@@ -83,6 +83,7 @@ filter = [0,1,2,3,4,5,6,7]
 # filter = [2,3,4,5]
 # filter = [1,6]
 ring = "R2"
+plane = "H"
 speed = "15"
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
@@ -92,7 +93,7 @@ mean_bct_length_length = 0
 
 
 for r in run:
-	folder_profiles = os.path.join(os.getcwd(), ring + "_speed_" + str(speed) + "_Run_" + str(r) + "_profiles")
+	folder_profiles = os.path.join(os.getcwd(), ring + plane + "_speed_" + str(speed) + "_Run_" + str(r) + "_profiles")
 	for filt in filter:
 
 		sigmas = []
@@ -105,7 +106,7 @@ for r in run:
 
 		while counter <= shot_max:
 			for folder in os.listdir("."):
-				if folder.startswith(ring):
+				if folder.startswith(ring + plane):
 					if "Speed"+str(speed) in folder:
 						if "Filter"+str(filt) in folder:
 							if "Run"+str(r) in folder:
@@ -119,17 +120,17 @@ for r in run:
 									if int(shot) == counter:
 										
 										pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
-										if int(pm) > 60:
+										if int(pm) > 40:
 											plot_profile(f)
 											
 											# ---------------------------------------Plotting individual profiles---------------------------------------
 											# plt.figure(1)
-											# # plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
-											# # plt.plot(data_x, data_y, label="data", color="black")
-											# plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
-											# plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
+											# plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
+											# plt.plot(data_x, data_y, label="data", color="black")
+											# # plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
+											# # plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
 											# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-											# plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)))
+											# plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
 
 											# # plt.xlabel('Position [mm]')
 											# plt.xlabel('Time [s]')  # ----------------For time dependent measurement----------------
@@ -160,7 +161,7 @@ for r in run:
 															bcts.append(bct)
 														
 											pms.append(float(pm))
-											if abs(popt[2]) < 10000:
+											if abs(popt[2]) < 4:
 												sigmas.append(abs(popt[2]))
 												sigmas_areas.append(abs(popt[2]*popt[0]))
 											else:
@@ -229,7 +230,7 @@ for filt in filter:
 
 	bcts_final = []
 	bcts_final_errors = []
-	for i in range (0,19):
+	for i in range (0,20):
 		all_sigmas = []
 		all_sigmas_areas = []
 		all_pms = []
@@ -270,13 +271,14 @@ for filt in filter:
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
-	plt.title("Profile dependance on PM gain." + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	plt.title(ring + plane + " Speed: " + speed + ", Profile dependance on PM gain." + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
 	plt.xlabel('PM gain [%]')
 	plt.xticks(np.arange(0, 1051, step=50))
+	plt.yticks(np.arange(0, 4, step=0.5))
 	plt.ylabel(r'Sigma [mm]')
 	# plt.ylabel(r'Sigma [s]')  # ----------------For time dependent measurement----------------
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-	# plt.savefig("sigma_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+	# plt.savefig("sigma_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
 	plt.figure(4)
@@ -284,11 +286,11 @@ for filt in filter:
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
-	plt.title("Profile * Amplitude dependance on intensity."  + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	plt.title(ring + plane + " Speed: " + speed + ", Profile * Amplitude dependance on intensity."  + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
 	plt.xlabel('Intensity [???]')
 	plt.ylabel(r'Sigma * Amplitude [mm * mA]')
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-	# plt.savefig("sigma_times_area_on_intensity_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+	# plt.savefig("sigma_times_area_on_intensity_" + ring + plane + "_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
 	plt.figure(5)
@@ -296,20 +298,21 @@ for filt in filter:
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
-	plt.title("Profile * Amplitude dependance on PM gain." + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	plt.title(ring + plane + " Speed: " + speed + ", Profile * Amplitude dependance on PM gain." + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
 	plt.xlabel('PM gain [%]')
 	plt.xticks(np.arange(0, 1051, step=50))
+	plt.yticks(np.arange(-0.25, 4, step=0.25))
 	plt.ylabel(r'Sigma * Amplitude [mm * mA]')
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-	# plt.savefig("sigma_times_area_on_pm_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
+	# plt.savefig("sigma_times_area_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
 plt.figure(3)
-plt.savefig("all_sigma_on_pm" + "_speed" + speed + ".png", bbox_inches='tight')
+plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
 
 # plt.figure(4)
-# plt.savefig("all_sigma_times_area_on_intensity" + "_speed" + speed + ".png", bbox_inches='tight')
+# plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
 
-# plt.figure(5)
-# plt.savefig("all_sigma_times_area_on_pm" + "_speed" + speed + ".png", bbox_inches='tight')
+plt.figure(5)
+plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
 

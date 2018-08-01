@@ -36,10 +36,11 @@ def get_column(infile):
 color_list = sns.color_palette("hls", 9)
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 
-run = [1]
+run = [1,2,3]
 filter = [0,1,2,3,4,5,6,7]
 ring = "R2"
-speed = "15"
+plane = "H"
+speed = "10"
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
@@ -48,8 +49,8 @@ mean_bct_length_length = 0
 
 
 for r in run:
-	folder_profiles = os.path.join(os.getcwd(), ring + "_speed_" + str(speed) + "_Run_" + str(r) + "_profiles")
-	folder_intensity = os.path.join(os.getcwd(), ring + "_speed_" + str(speed) + "_Run_" + str(r) + "_intensity")
+	folder_profiles = os.path.join(os.getcwd(), ring + plane + "_speed_" + str(speed) + "_Run_" + str(r) + "_profiles")
+	folder_intensity = os.path.join(os.getcwd(), ring + plane + "_speed_" + str(speed) + "_Run_" + str(r) + "_intensity")
 	for filt in filter:
 
 		sigmas = []
@@ -62,7 +63,7 @@ for r in run:
 
 		while counter <= shot_max:
 			for folder in os.listdir("."):
-				if folder.startswith(ring):
+				if folder.startswith(ring + plane):
 					if "Speed"+str(speed) in folder:
 						if "Filter"+str(filt) in folder:
 							if "Run"+str(r) in folder:
