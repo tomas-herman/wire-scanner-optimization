@@ -5,3 +5,6 @@ export JAVA_HOME="/usr/java/jdk1.8"
 git config --global user.name "Tomas Herman"
 git config --global user.email "tomas.herman@cern.ch"
 
+echo "!!!Change MD USER!!!"
+echo "!!!Change MD USER!!!"
+echo "!!!Change MD USER!!!"

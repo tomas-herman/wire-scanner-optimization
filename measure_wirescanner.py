@@ -12,9 +12,9 @@ user = "PSB.USER.MD3"
 ring = "R2"
 
 speeds = [15]
-runs = [7]
-filters = [6]
-planes = ["H","V"]
+runs = [2]
+filters = [7]
+planes = ["H"]
 
 # Start pyjapc
 japc = pyjapc.PyJapc()
@@ -86,6 +86,7 @@ for p in planes:
                     print(">> Photomultiplier gain set to (not measured!):", pm)
                     print(">> Filter set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#pmFilter"))
                     print(">> Run: " + str(r))
+                    print(">> Ring and plane: " + ring + plane)
     
     
                 def get_profile(ring, plane, folder, ctime, shot):
@@ -159,7 +160,7 @@ for p in planes:
                 callback.counter = 0
     
     
-                while pm <= 51:
+                while pm <= 1001:
                     time.sleep(0.5)
                 else:
                     time.sleep(1)
