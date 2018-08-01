@@ -70,23 +70,28 @@ for p in planes:
     
     
                 def set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed):
-                    japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#acqDelay", ctime)
-                    # Speeds: 10 m/s = 1, 15 m/s = 2
-                    if wire_speed == '10':
-                        japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#wireSpeed", 1)
-                    elif wire_speed == '15':
-                        japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#wireSpeed", 2)
-                    japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#gain", pm)
-                    japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#pmFilter", filt)
-                    japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#mode", 1)
-                    print(">> ctime set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#acqDelay"))
-                    print(">> ctime in the wirescanner:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#acqDelay"))
-                    print(">> Wire speed set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#wireSpeed"))
-                    #print(">> Photomultiplier gain set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain"))
-                    print(">> Photomultiplier gain set to (not measured!):", pm)
-                    print(">> Filter set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#pmFilter"))
-                    print(">> Run: " + str(r))
-                    print(">> Ring and plane: " + ring + plane)
+                    try:
+                        japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#acqDelay", ctime)
+                        # Speeds: 10 m/s = 1, 15 m/s = 2
+                        if wire_speed == '10':
+                            japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#wireSpeed", 1)
+                        elif wire_speed == '15':
+                            japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#wireSpeed", 2)
+                        japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#gain", pm)
+                        japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#pmFilter", filt)
+                        japc.setParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#mode", 1)
+                        print(">> ctime set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#acqDelay"))
+                        print(">> ctime in the wirescanner:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#acqDelay"))
+                        print(">> Wire speed set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#wireSpeed"))
+                        #print(">> Photomultiplier gain set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain"))
+                        print(">> Photomultiplier gain set to (not measured!):", pm)
+                        print(">> Filter set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#pmFilter"))
+                        print(">> Run: " + str(r))
+                        print(">> Ring and plane: " + ring + plane)
+                    except:
+                        print('>> Someone else is using the wire scanner. Waiting for next cycle to set the parameters.')
+                        callback.counter = callback.counter - 1
+                        
     
     
                 def get_profile(ring, plane, folder, ctime, shot):
@@ -104,7 +109,7 @@ for p in planes:
                                 fout.write("{:.12E}".format(i) + "  " + "{:.12E}".format(j) + "  " + "{:.12E}".format(k) + '\n')
                         return 1
                     except TypeError:
-                        print('>> No WS data. Waiting for next cycle.')
+                        print('>> No WS data. Skipping this settings and going for next cycle.')
                         return 0
     
                 def record_bct(ring, ctime):
