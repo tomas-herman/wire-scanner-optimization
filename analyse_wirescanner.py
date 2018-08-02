@@ -67,9 +67,19 @@ def plot_profile(infile):
     		mu2 = k
 
     # Gaussian fit
-    popt, pcov = curve_fit(gauss, data_x, data_y, p0=[mx, mu, 2.6, 0, 0.01])
+    try:
+    	popt, pcov = curve_fit(gauss, data_x, data_y, p0=[mx, mu, 2.6, 0, 0.01])
+    except:
+    	print("")
+    	print("Fit failed.")
+    	print("")
+    	popt[0] = float("NaN")
+    	popt[1] = float("NaN")
+    	popt[2] = float("NaN")
+    	popt[3] = float("NaN")
+    	popt[4] = float("NaN")
     # popt, pcov = curve_fit(gauss, data_z, data_y, p0=[mx, mu2, 0.2, 0, 0.2])  # ----------------For time dependent measurement----------------
-    perr = np.sqrt(abs(np.diag(pcov))) # this is the error of the parameters sigma is second
+    # perr = np.sqrt(abs(np.diag(pcov))) # this is the error of the parameters sigma is second
    
 
 # color_list = ["black", "blue", "orange", "green", "yellow", "magenta", "purple", "red", "maroon"]
@@ -121,27 +131,28 @@ for r in run:
 										
 										pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
 										if int(pm) > 40:
+
 											plot_profile(f)
 											
 											# ---------------------------------------Plotting individual profiles---------------------------------------
-											# plt.figure(1)
-											# plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
-											# plt.plot(data_x, data_y, label="data", color="black")
-											# # plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
-											# # plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
-											# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-											# plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
+											plt.figure(1)
+											plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
+											plt.plot(data_x, data_y, label="data", color="black")
+											# plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
+											# plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
+											plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+											plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
 
-											# # plt.xlabel('Position [mm]')
-											# plt.xlabel('Time [s]')  # ----------------For time dependent measurement----------------
-											# plt.ylabel(r'Current [mA]')
+											# plt.xlabel('Position [mm]')
+											plt.xlabel('Time [s]')  # ----------------For time dependent measurement----------------
+											plt.ylabel(r'Current [mA]')
 
-											# if not os.path.exists(folder_profiles):
-											# 	print("Creating folder: " + folder_profiles)
-											# 	os.makedirs(folder_profiles)
+											if not os.path.exists(folder_profiles):
+												print("Creating folder: " + folder_profiles)
+												os.makedirs(folder_profiles)
 
-											# plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
-											# plt.clf()
+											plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
+											plt.clf()
 											# ---------------------------------------Plotting individual profiles---------------------------------------
 
 
@@ -158,7 +169,11 @@ for r in run:
 
 													for t,bct in zip(data_time,data_bct):
 														if t == 796:
-															bcts.append(bct)
+															if bct > 10:
+																bcts.append(bct)
+															else:
+																print("Intensity recording failed")
+																bcts.append(float("NaN"))
 														
 											pms.append(float(pm))
 											if abs(popt[2]) < 4:
@@ -238,6 +253,7 @@ for filt in filter:
 
 		for r in run:
 			all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas_normalised")][i])
+			# all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas")][i]) #Not normalised sigma
 			all_sigmas_areas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas")][i])			
 			all_pms.append(measured_data_dict[(str(r),str(filt),"pms")][i])
 			all_bcts.append(measured_data_dict[(str(r),str(filt),"bcts")][i])
@@ -313,6 +329,6 @@ plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + speed + ".png", bbox_
 # plt.figure(4)
 # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
 
-plt.figure(5)
-plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
+# plt.figure(5)
+# plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
 
