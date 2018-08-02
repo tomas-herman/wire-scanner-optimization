@@ -11,9 +11,9 @@ import warnings
 user = "PSB.USER.MD3"
 ring = "R2"
 
-speeds = [15]
-runs = [2]
-filters = [7]
+speeds = [10,15]
+runs = [4,5]
+filters = [0,1,2,3,4,5,6,7]
 planes = ["H"]
 
 # Start pyjapc
