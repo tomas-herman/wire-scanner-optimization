@@ -8,12 +8,12 @@ import time
 import warnings
 
 # Settings
-user = "PSB.USER.MD3"
+user = "PSB.USER.MD1"
 ring = "R2"
 
-speeds = [10,15]
-runs = [4,5]
-filters = [0,1,2,3,4,5,6,7]
+speeds = [15]
+runs = [3]
+filters = [1,2,3,4,5,6,7]
 planes = ["H"]
 
 # Start pyjapc
