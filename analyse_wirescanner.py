@@ -2,10 +2,12 @@ import os
 import sys
 import re
 import glob
+import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 import collections
 import seaborn as sns
+import matplotlib.axes as ax
 from matplotlib import rcParams
 from matplotlib.pyplot import figure
 from scipy.optimize import curve_fit
@@ -87,14 +89,14 @@ def plot_profile(infile):
 color_list = plt.get_cmap('Dark2')
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 
-run = [1,2,3,4,5]
+run = [2,4]
 filter = [0,1,2,3,4,5,6,7]
 # filter = [0,4,5,7]
 # filter = [2,3,4,5]
 # filter = [1,6]
 ring = "R2"
 plane = "H"
-speed = "10"
+speed = "15"
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
@@ -287,14 +289,16 @@ for filt in filter:
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
-	plt.title(ring + plane + " Speed: " + speed + ", Profile dependance on PM gain." + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	plt.title(ring + plane + " Speed: " + speed + ", Sigma on PM gain." + " Avg beam I: " + str(round(mean_bct,3)) + "$ \cdot 10^{10}$ protons", fontsize=18)
 	plt.xlabel('PM gain [%]')
 	plt.xticks(np.arange(0, 1051, step=50))
-	plt.yticks(np.arange(1.5, 3, step=0.5)) # For sellected data
-	# plt.yticks(np.arange(0, 4, step=0.5)) # For all data
+	# plt.yticks(np.arange(1.5, 3, step=0.5)) # For sellected data
+	plt.yticks(np.arange(0, 4, step=0.5)) # For all data
 	plt.ylabel(r'Sigma [mm]')
 	# plt.ylabel(r'Sigma [s]')  # ----------------For time dependent measurement----------------
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+	# plt.rc('grid', linestyle="dashed", color='grey')
+	# plt.grid(True)
 	# plt.savefig("sigma_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
@@ -303,10 +307,12 @@ for filt in filter:
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
-	plt.title(ring + plane + " Speed: " + speed + ", Profile * Amplitude dependance on intensity."  + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	plt.title(ring + plane + " Speed: " + speed + ", Sigma $\cdot$ Amplitude on intensity."  + " Avg beam I: " + str(round(mean_bct,3)) + "$ \cdot 10^{10}$ protons", fontsize=18)
 	plt.xlabel('Intensity [???]')
 	plt.ylabel(r'Sigma * Amplitude [mm * mA]')
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+	# plt.rc('grid', linestyle="-", color='black')
+	# plt.grid(True)
 	# plt.savefig("sigma_times_area_on_intensity_" + ring + plane + "_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
@@ -315,22 +321,27 @@ for filt in filter:
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
-	plt.title(ring + plane + " Speed: " + speed + ", Profile * Amplitude dependance on PM gain." + " Average beam intensity: " + str(round(mean_bct,3)) + " ???")
+	plt.title(ring + plane + " Speed: " + speed + ", Sigma $\cdot$ Amplitude on PM gain." + " Avg beam I: " + str(round(mean_bct,3)) + "$ \cdot 10^{10}$ protons", fontsize=18)
 	plt.xlabel('PM gain [%]')
 	plt.xticks(np.arange(0, 1051, step=50))
-	# plt.yticks(np.arange(-0.25, 4, step=0.25)) # For all data 
-	plt.yticks(np.arange(-0.25, 1, step=0.25)) # For sellected data
+	plt.yticks(np.arange(-0.25, 4, step=0.25)) # For all data 
+	# plt.yticks(np.arange(-0.25, 1, step=0.25)) # For sellected data
 	plt.ylabel(r'Sigma * Amplitude [mm * mA]')
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+	# plt.rc('grid', linestyle="dashed", color='grey')
+	# plt.grid(True)
 	# plt.savefig("sigma_times_area_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + speed + ".png", bbox_inches='tight')
 	# plt.clf()
 
-# plt.figure(3)
-# plt.savefig("selected_sigma_on_pm_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
+plt.figure(3)
+# ax.grid(color='r', linestyle='--', linewidth=2)
+plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
 
 # plt.figure(4)
 # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
 
-# plt.figure(5)
-# plt.savefig("selected_sigma_times_area_on_pm_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
+plt.figure(5)
+# plt.rc('grid', linestyle=':', color='g')
+# plt.grid(True)
+plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + speed + ".png", bbox_inches='tight')
 
