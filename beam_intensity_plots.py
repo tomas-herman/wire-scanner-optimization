@@ -36,11 +36,11 @@ def get_column(infile):
 color_list = sns.color_palette("hls", 9)
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 
-run = [1,2,4]
+run = [1,2,3,4,5]
 filter = [0,1,2,3,4,5,6,7]
 ring = "R2"
 plane = "H"
-speed = "15"
+speed = "10"
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
@@ -112,7 +112,7 @@ for r in run:
 													plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Intensity at 796 ms: " + str(round(bct_at_796,3)))
 
 													plt.xlabel('Time [ms]')
-													plt.ylabel(r'Intensity [???]')
+													plt.ylabel(r'Intensity $10^{10}$')
 
 													if not os.path.exists(folder_intensity):
 														print("Creating folder: " + folder_intensity)
