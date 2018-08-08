@@ -8,12 +8,12 @@ import time
 import warnings
 
 # Settings
-user = "PSB.USER.MD1"
+user = "PSB.USER.MD5"
 
 ring = "R2"
 speeds = [15]
-runs = [3,5,6]
-# filters = [1,2,3,4,5,6,7]
+runs = [11,12]
+filters = [0,1,2,3,4,5,6,7]
 planes = ["H"]
 
 # Start pyjapc
@@ -25,12 +25,8 @@ for p in planes:
     plane = p
     for s in speeds:
         for r in runs:
-            if r == 3
-                filters = [1,2,3,4,5,6,7]
-            if r == 5
-                filters = [4,5,6,7]
-            if r == 6
-                filters = [0,1,2,3,4,5,6,7]                
+            # if r == 3:
+                # filters = [1,2,3,4,5,6,7]             
             for f in filters:
     
                 wire_speed = str(s)
@@ -101,6 +97,7 @@ for p in planes:
     
     
                 def get_profile(ring, plane, folder, ctime, shot):
+                    global pm
                     try:
                         l=0
                         data_x = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1")
@@ -113,9 +110,11 @@ for p in planes:
                                     print(i, j, k)
                                     l += 1
                                 fout.write("{:.12E}".format(i) + "  " + "{:.12E}".format(j) + "  " + "{:.12E}".format(k) + '\n')
+                        pm += 50                        
                         return 1
                     except TypeError:
-                        print('>> No WS data. Skipping this settings and going for next cycle.')
+                        print('>> No WS data. Repeating this settings in the next cycle.')
+                        callback.counter = callback.counter - 3                  
                         return 0
     
                 def record_bct(ring, ctime):
@@ -140,12 +139,9 @@ for p in planes:
                     callback.counter += 1
                     print('')
                     print('>> Shot', callback.counter)
-                    #get_profile(ring, plane, folder, ctime, callback.counter)
-                    #set_ws_params(ring, plane, time_stamp, ctime, 4, 1000, wire_speed)
     
                     if callback.counter % 3 == 1:
                         #print(callback.counter)
-                        #get_profile(ring, plane, folder, ctime, callback.counter)
                         print('')
                         print('>> Setting parameters for a new scan')
                         set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed)
@@ -153,14 +149,11 @@ for p in planes:
                         print('')
                         print(">> Excecuting scan")
                         #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
-                        #set_ws_params(ring, plane, time_stamp, ctime, 4, 1000, wire_speed)
-                        #pm += 10
                     else:
                         print('')
                         print(">> Reading data")
                         get_profile(ring, plane, folder, ctime, callback.counter)
                         record_bct(ring, ctime)
-                        pm += 50
                         #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
                     
                    
