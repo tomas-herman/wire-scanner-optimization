@@ -12,8 +12,8 @@ user = "PSB.USER.MD5"
 
 ring = "R2"
 speeds = [15]
-runs = [6,7]
-filters = [0,1,2,3,4,5,6,7]
+runs = [6,7,8,9]
+#filters = [0,1,2,3,4,5,6,7]
 planes = ["H"]
 
 # Start pyjapc
@@ -25,8 +25,10 @@ for p in planes:
     plane = p
     for s in speeds:
         for r in runs:
-            #if r == 11:
-                #filters = [1,2,3,4,5,6,7]            
+            if r == 6:
+                filters = [3,4,5,6,7]
+            if r == 7:
+                filters = [0,1,2,3,4,5,6,7]               
             for f in filters:
     
                 wire_speed = str(s)
