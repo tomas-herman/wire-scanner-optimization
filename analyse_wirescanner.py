@@ -35,16 +35,16 @@ def get_column(infile):
 def gauss(x, a, b, c, d, e):
     return a * np.exp(-(x - b) ** 2 / (2 * c ** 2)) + d * x + e
 
-def empirical(x, a, b, c, d):
-    return a * x * b * 1/c * d
+def empirical(x, a, e, b, c, d):
+    return a * x * b * 1/c * d + e
 
-def fit_intensity(pm, intensity, filter, speed, bct):
+def fit_intensity(pm, intensity, intensity_error, filter, speed, bct):
     global popt1
     global perr1
 
     # Empirical fit
     try:
-    	popt1, pcov1 = curve_fit(lambda x, a: empirical(x, a, filter, speed, bct), pm, intensity)  # ----------------For time dependent measurement----------------
+    	popt1, pcov1 = curve_fit(lambda x, a, e: empirical(x, a, e, filter, speed, bct), pm, intensity, sigma = intensity_error)  # ----------------For time dependent measurement----------------
     	perr1 = np.sqrt(abs(np.diag(pcov1)))
     except:
     	print("")
@@ -115,18 +115,18 @@ def plot_profile(infile):
 # color_list = sns.color_palette("hls", 8)
 color_list = plt.get_cmap('Dark2')
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
-filter_list1 = [0, 0.2, 0.05, 0.02, 0.005, 0.002, 1, 0]
+filter_list1 = [1, 20, 5, 2, 0.5, 0.2, 100, 1]
 
-# run = [2,4,11]
+run = [2,4,11]
 # run = [1,2,3,4,5]
-run = [4,5]
+# run = [4,5]
 filter = [0,1,2,3,4,5,6,7]
 # filter = [0,4,5,7]
 # filter = [2,3,4,5]
 # filter = [1,6]
 ring = "R2"
 plane = "H"
-speed = 10
+speed = 15
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
@@ -317,7 +317,7 @@ for filt in filter:
 	measured_data_dict[(str(filt),"bcts_final_errors")] = bcts_final_errors
 
 	# ---------------------------------------------------- Empiricla Fit ----------------------------------------------------
-	fit_intensity(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], filter_list1[filt], speed, mean_bct)
+	fit_intensity(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], measured_data_dict[(str(filt),"sigmas_final_errors")], filter_list1[filt], speed, mean_bct)
 	# print("")
 	# print("Filter: " + filter_list[filt])
 	# print("K: " + str(popt1[0]))
@@ -358,7 +358,7 @@ for filt in filter:
 
 	plt.figure(5)
 	plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
-	plt.plot(measured_data_dict[(str(filt),"pms_final")], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")]), popt1[0], filter_list1[filt], speed, mean_bct), label=("k: " + str(popt1[0])), lw=0.8, color=color_list(filt))
+	plt.plot(measured_data_dict[(str(filt),"pms_final")], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")]), *popt1, filter_list1[filt], speed, mean_bct), label=("k: " + str(round(popt1[0],8)) + "$\pm$" + str(round(perr1[0],8)) + "\n" + "e: " + str(round(popt1[1],5)) + "$\pm$" + str(round(perr1[1],5))), lw=0.8, color=color_list(filt))
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
@@ -372,15 +372,15 @@ for filt in filter:
 	plt.ylabel(r'Sigma $\cdot$ Amplitude [ms * mA]', fontsize=14)  # ----------------For time dependent measurement----------------
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 	plt.grid(b=None, which='major', axis='both', linewidth=0.3, linestyle="--", color="black") 
-	# plt.savefig("sigma_times_area_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + str(speed) + ".png", bbox_inches='tight')
-	# plt.clf()
+	plt.savefig("sigma_times_area_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + str(speed) + ".png", bbox_inches='tight')
+	plt.clf()
 
 # plt.figure(3)
 # # plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 # plt.savefig("all_sigma(time)_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
-# # plt.figure(4)
-# # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+# # # plt.figure(4)
+# # # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 
 # plt.figure(5)
 # # plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
