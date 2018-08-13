@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import collections
 import seaborn as sns
 import matplotlib.axes as ax
+import scipy.stats as stat
 from matplotlib import rcParams
 from matplotlib.pyplot import figure
 from scipy.optimize import curve_fit
@@ -109,6 +110,14 @@ def plot_profile(infile):
     	popt[4] = float("NaN")
     
     # perr = np.sqrt(abs(np.diag(pcov))) # this is the error of the parameters sigma is second
+
+
+def chisquare(observed_values,expected_values, sigma_values):
+    test_statistic=0
+    for observed, expected, sigma in zip(observed_values, expected_values, sigma_values):
+        test_statistic+=(float(observed)-float(expected))**2/float(sigma)**2
+    return test_statistic
+
    
 
 # color_list = ["black", "blue", "orange", "green", "yellow", "magenta", "purple", "red", "maroon"]
@@ -117,16 +126,16 @@ color_list = plt.get_cmap('Dark2')
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 filter_list1 = [1, 20, 5, 2, 0.5, 0.2, 100, 1]
 
-run = [2,4,11]
+# run = [2,4,11]
 # run = [1,2,3,4,5]
-# run = [4,5]
+run = [4,5]
 filter = [0,1,2,3,4,5,6,7]
 # filter = [0,4,5,7]
 # filter = [2,3,4,5]
 # filter = [1,6]
 ring = "R2"
 plane = "H"
-speed = 15
+speed = 10
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
@@ -267,6 +276,9 @@ for filt in filter:
 	# plt.clf()
 #------------------------------------------------------------------------------------------Old ploting------------------------------------------------------------------------------------------
 
+
+
+
 for filt in filter:
 	sigmas_final = []
 	sigmas_final_errors = []
@@ -279,7 +291,23 @@ for filt in filter:
 
 	bcts_final = []
 	bcts_final_errors = []
-	for i in range (0,20):
+
+	filter_range = range(0,20)
+
+	if speed == 10:
+		if filt == 1:
+			filter_range = range(0,2)
+		if filt == 2:
+			filter_range = range(0,11)
+
+	if speed == 15:
+		if filt == 1:
+			filter_range = range(0,3)
+		if filt == 2:
+			filter_range = range(0,15)
+
+
+	for i in filter_range:
 		all_sigmas = []
 		all_sigmas_areas = []
 		all_pms = []
@@ -318,6 +346,8 @@ for filt in filter:
 
 	# ---------------------------------------------------- Empiricla Fit ----------------------------------------------------
 	fit_intensity(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], measured_data_dict[(str(filt),"sigmas_final_errors")], filter_list1[filt], speed, mean_bct)
+	chi_test = chisquare(measured_data_dict[(str(filt),"sigmas_areas_final")], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")]), *popt1, filter_list1[filt], speed, mean_bct), measured_data_dict[(str(filt),"sigmas_areas_final_errors")])
+	# print(chi_test)
 	# print("")
 	# print("Filter: " + filter_list[filt])
 	# print("K: " + str(popt1[0]))
@@ -358,7 +388,7 @@ for filt in filter:
 
 	plt.figure(5)
 	plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
-	plt.plot(measured_data_dict[(str(filt),"pms_final")], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")]), *popt1, filter_list1[filt], speed, mean_bct), label=("k: " + str(round(popt1[0],8)) + "$\pm$" + str(round(perr1[0],8)) + "\n" + "e: " + str(round(popt1[1],5)) + "$\pm$" + str(round(perr1[1],5))), lw=0.8, color=color_list(filt))
+	plt.plot(measured_data_dict[(str(filt),"pms_final")], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")]), *popt1, filter_list1[filt], speed, mean_bct), label=("k: " + str(round(popt1[0],8)) + "$\pm$" + str(round(perr1[0],8)) + "\n" + "e: " + str(round(popt1[1],5)) + "$\pm$" + str(round(perr1[1],5)) + "\n" + "$\chi^2$: " + str(round(chi_test,3))), lw=0.8, color=color_list(filt))
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)

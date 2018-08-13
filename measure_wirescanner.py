@@ -13,7 +13,7 @@ user = "PSB.USER.MD5"
 ring = "R2"
 speeds = [15]
 runs = [6,7,8,9]
-#filters = [0,1,2,3,4,5,6,7]
+filters = [0,1,2,3,4,5,6,7]
 planes = ["H"]
 
 # Start pyjapc
@@ -25,10 +25,10 @@ for p in planes:
     plane = p
     for s in speeds:
         for r in runs:
-            if r == 6:
-                filters = [3,4,5,6,7]
-            if r == 7:
-                filters = [0,1,2,3,4,5,6,7]               
+            # if r == 6:
+            #     filters = [3,4,5,6,7]
+            # if r == 7:
+            #     filters = [0,1,2,3,4,5,6,7]               
             for f in filters:
     
                 wire_speed = str(s)
@@ -89,6 +89,7 @@ for p in planes:
                         print(">> Wire speed set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#wireSpeed"))
                         #print(">> Photomultiplier gain set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain"))
                         print(">> Photomultiplier gain set to (not measured!):", pm)
+                        print(">> Photomultiplier voltage set to (measured!):", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#voltage"))
                         print(">> Filter set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#pmFilter"))
                         print(">> Run: " + str(r))
                         print(">> Ring and plane: " + ring + plane)
@@ -106,7 +107,7 @@ for p in planes:
                         data_y = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projDataSet1")
                         data_z = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#ctrTStampSet1")
     
-                        with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_time" + str(ctime)  + "_speed" + str(wire_speed) + "_filter" + str(filt) + "_shot" + str(int(callback.counter/3)) + "__" + "_pm" + str(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain")) + "__" + ".txt"), 'w') as fout:
+                        with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_time" + str(ctime)  + "_speed" + str(wire_speed) + "_filter" + str(filt) + "_shot" + str(int(callback.counter/3)) + "__" + "_pm" + str(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain")) + "__" + "_voltage" + str(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#voltage")) + "__" + ".txt"), 'w') as fout:
                             for i, j, k in zip(data_x, data_y, data_z):
                                 if l < 3: 
                                     print(i, j, k)
