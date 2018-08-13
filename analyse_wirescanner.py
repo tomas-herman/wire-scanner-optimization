@@ -128,14 +128,14 @@ filter_list1 = [1, 20, 5, 2, 0.5, 0.2, 100, 1]
 
 # run = [2,4,11]
 # run = [1,2,3,4,5]
-run = [4,5]
+run = [3,5,6]
 filter = [0,1,2,3,4,5,6,7]
 # filter = [0,4,5,7]
 # filter = [2,3,4,5]
 # filter = [1,6]
 ring = "R2"
 plane = "H"
-speed = 10
+speed = 15
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
@@ -173,34 +173,36 @@ for r in run:
 									if int(shot) == counter:
 										
 										pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
-										try:
+										if "voltage" in f:
 											volt = f[f.find('voltage') + 7: f.find('voltage') + 11].strip("_")
-										except:
+										else:
 											volt = 1
 										if int(pm) > 40:
-											# print(filt)
-											# print(pm)
+											print("Run: " + str(r))
+											print("Filter: " + str(filt))
+											print("PM gain: " + str(pm))
+											# print (volt)
 											plot_profile(f)
 											
 											# ---------------------------------------Plotting individual profiles---------------------------------------
-											# plt.figure(1)
-											# # plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
-											# # plt.plot(data_x, data_y, label="data", color="black")
-											# plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
-											# plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
-											# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-											# plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
+											plt.figure(1)
+											# plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
+											# plt.plot(data_x, data_y, label="data", color="black")
+											plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
+											plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
+											plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+											plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
 
-											# # plt.xlabel('Position [mm]')
-											# plt.xlabel('Time [ms]')  # ----------------For time dependent measurement----------------
-											# plt.ylabel(r'Current [mA]')
+											# plt.xlabel('Position [mm]')
+											plt.xlabel('Time [ms]')  # ----------------For time dependent measurement----------------
+											plt.ylabel(r'Current [mA]')
 
-											# if not os.path.exists(folder_profiles):
-											# 	print("Creating folder: " + folder_profiles)
-											# 	os.makedirs(folder_profiles)
+											if not os.path.exists(folder_profiles):
+												print("Creating folder: " + folder_profiles)
+												os.makedirs(folder_profiles)
 
-											# plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
-											# plt.clf()
+											plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
+											plt.clf()
 											# ---------------------------------------Plotting individual profiles---------------------------------------
 
 
@@ -224,7 +226,7 @@ for r in run:
 																bcts.append(float("NaN"))
 														
 											pms.append(float(pm))
-											volts.append(folat(volt))
+											volts.append(float(volt))
 											if abs(popt[2]) < 4:
 												sigmas.append(abs(popt[2]))
 												sigmas_areas.append(abs(popt[2]*popt[0]))
@@ -304,17 +306,17 @@ for filt in filter:
 
 	filter_range = range(0,20)
 
-	if speed == 10:
-		if filt == 1:
-			filter_range = range(0,2)
-		if filt == 2:
-			filter_range = range(0,11)
+	# if speed == 10:
+	# 	if filt == 1:
+	# 		filter_range = range(0,2)
+	# 	if filt == 2:
+	# 		filter_range = range(0,11)
 
-	if speed == 15:
-		if filt == 1:
-			filter_range = range(0,3)
-		if filt == 2:
-			filter_range = range(0,15)
+	# if speed == 15:
+	# 	if filt == 1:
+	# 		filter_range = range(0,3)
+	# 	if filt == 2:
+	# 		filter_range = range(0,15)
 
 
 	for i in filter_range:
@@ -406,7 +408,7 @@ for filt in filter:
 
 	plt.figure(5)
 	plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
-	plt.plot(measured_data_dict[(str(filt),"pms_final")], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")]), *popt1, filter_list1[filt], speed, mean_bct), label=("k: " + str(round(popt1[0],8)) + "$\pm$" + str(round(perr1[0],8)) + "\n" + "e: " + str(round(popt1[1],5)) + "$\pm$" + str(round(perr1[1],5)) + "\n" + "$\chi^2$: " + str(round(chi_test,3))), lw=0.8, color=color_list(filt))
+	# plt.plot(measured_data_dict[(str(filt),"pms_final")], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")]), *popt1, filter_list1[filt], speed, mean_bct), label=("k: " + str(round(popt1[0],8)) + "$\pm$" + str(round(perr1[0],8)) + "\n" + "e: " + str(round(popt1[1],5)) + "$\pm$" + str(round(perr1[1],5)) + "\n" + "$\chi^2$: " + str(round(chi_test,3))), lw=0.8, color=color_list(filt))
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
