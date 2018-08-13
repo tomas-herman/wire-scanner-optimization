@@ -126,16 +126,15 @@ color_list = plt.get_cmap('Dark2')
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 filter_list1 = [1, 20, 5, 2, 0.5, 0.2, 100, 1]
 
-# run = [2,4,11]
-# run = [1,2,3,4,5]
-run = [3,5,6]
+run = [4,5]
+# run = [1,2,3,4,5,6]
 filter = [0,1,2,3,4,5,6,7]
 # filter = [0,4,5,7]
 # filter = [2,3,4,5]
 # filter = [1,6]
 ring = "R2"
 plane = "H"
-speed = 15
+speed = 10
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
@@ -185,24 +184,24 @@ for r in run:
 											plot_profile(f)
 											
 											# ---------------------------------------Plotting individual profiles---------------------------------------
-											plt.figure(1)
-											# plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
-											# plt.plot(data_x, data_y, label="data", color="black")
-											plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
-											plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
-											plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-											plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
+											# plt.figure(1)
+											# # plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
+											# # plt.plot(data_x, data_y, label="data", color="black")
+											# plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
+											# plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
+											# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+											# plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
 
-											# plt.xlabel('Position [mm]')
-											plt.xlabel('Time [ms]')  # ----------------For time dependent measurement----------------
-											plt.ylabel(r'Current [mA]')
+											# # plt.xlabel('Position [mm]')
+											# plt.xlabel('Time [ms]')  # ----------------For time dependent measurement----------------
+											# plt.ylabel(r'Current [mA]')
 
-											if not os.path.exists(folder_profiles):
-												print("Creating folder: " + folder_profiles)
-												os.makedirs(folder_profiles)
+											# if not os.path.exists(folder_profiles):
+											# 	print("Creating folder: " + folder_profiles)
+											# 	os.makedirs(folder_profiles)
 
-											plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
-											plt.clf()
+											# plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
+											# plt.clf()
 											# ---------------------------------------Plotting individual profiles---------------------------------------
 
 
@@ -425,14 +424,14 @@ for filt in filter:
 	# plt.savefig("sigma_times_area_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + str(speed) + ".png", bbox_inches='tight')
 	# plt.clf()
 
-plt.figure(3)
-# plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
-plt.savefig("all_sigma(time)_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
+# plt.figure(3)
+# # plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+# plt.savefig("all_sigma(time)_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
-# # plt.figure(4)
-# # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+# # # plt.figure(4)
+# # # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 
-plt.figure(5)
-# plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
-plt.savefig("all_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
+# plt.figure(5)
+# # plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+# plt.savefig("all_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
