@@ -12,8 +12,8 @@ user = "PSB.USER.MD5"
 
 ring = "R2"
 speeds = [15]
-runs = [6,7,8,9]
-filters = [0,1,2,3,4,5,6,7]
+runs = [5]
+filters = [7]
 planes = ["H"]
 
 # Start pyjapc
@@ -89,7 +89,7 @@ for p in planes:
                         print(">> Wire speed set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Setting#wireSpeed"))
                         #print(">> Photomultiplier gain set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain"))
                         print(">> Photomultiplier gain set to (not measured!):", pm)
-                        print(">> Photomultiplier voltage set to (measured!):", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#voltage"))
+                        print(">> Photomultiplier voltage set to (not measured!):", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#voltage"))
                         print(">> Filter set to:", japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/SettingHV#pmFilter"))
                         print(">> Run: " + str(r))
                         print(">> Ring and plane: " + ring + plane)
