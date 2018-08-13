@@ -151,6 +151,7 @@ for r in run:
 		sigmas = []
 		sigmas_areas = []
 		pms = []
+		volts = []
 		bcts = []
 
 		counter = 1 #set to 1 normally
@@ -172,6 +173,10 @@ for r in run:
 									if int(shot) == counter:
 										
 										pm = f[f.find('pm') + 2: f.find('pm') + 6].strip("_")
+										try:
+											volt = f[f.find('voltage') + 7: f.find('voltage') + 11].strip("_")
+										except:
+											volt = 1
 										if int(pm) > 40:
 											# print(filt)
 											# print(pm)
@@ -219,6 +224,7 @@ for r in run:
 																bcts.append(float("NaN"))
 														
 											pms.append(float(pm))
+											volts.append(folat(volt))
 											if abs(popt[2]) < 4:
 												sigmas.append(abs(popt[2]))
 												sigmas_areas.append(abs(popt[2]*popt[0]))
@@ -230,6 +236,7 @@ for r in run:
 										counter += 1
 										
 		measured_data_dict[(str(r),str(filt),"pms")] = pms 
+		measured_data_dict[(str(r),str(filt),"volts")] = volts 
 		measured_data_dict[(str(r),str(filt),"sigmas")] = sigmas
 		measured_data_dict[(str(r),str(filt),"sigmas_areas")] = sigmas_areas
 		measured_data_dict[(str(r),str(filt),"bcts")] = bcts
@@ -289,6 +296,9 @@ for filt in filter:
 	pms_final = []
 	pms_final_errors = []
 
+	volts_final = []
+	volts_final_errors = []
+
 	bcts_final = []
 	bcts_final_errors = []
 
@@ -311,6 +321,7 @@ for filt in filter:
 		all_sigmas = []
 		all_sigmas_areas = []
 		all_pms = []
+		all_volts = []
 		all_bcts = []
 
 		for r in run:
@@ -318,6 +329,7 @@ for filt in filter:
 			# all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas")][i]) #Not normalised sigma
 			all_sigmas_areas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas")][i])			
 			all_pms.append(measured_data_dict[(str(r),str(filt),"pms")][i])
+			all_volts.append(measured_data_dict[(str(r),str(filt),"volts")][i])
 			all_bcts.append(measured_data_dict[(str(r),str(filt),"bcts")][i])
 
 		sigmas_final.append(np.mean(all_sigmas))
@@ -328,6 +340,9 @@ for filt in filter:
 
 		pms_final.append(np.mean(all_pms))
 		pms_final_errors.append(np.std(all_pms,ddof=1))
+
+		volts_final.append(np.mean(all_volts))
+		volts_final_errors.append(np.std(all_volts,ddof=1))
 
 		bcts_final.append(np.mean(all_bcts))
 		bcts_final_errors.append(np.std(all_bcts,ddof=1))
@@ -340,6 +355,9 @@ for filt in filter:
 
 	measured_data_dict[(str(filt),"pms_final")] = pms_final
 	measured_data_dict[(str(filt),"pms_final_errors")] = pms_final_errors
+
+	measured_data_dict[(str(filt),"volts_final")] = volts_final
+	measured_data_dict[(str(filt),"volts_final_errors")] = volts_final_errors
 
 	measured_data_dict[(str(filt),"bcts_final")] = bcts_final
 	measured_data_dict[(str(filt),"bcts_final_errors")] = bcts_final_errors
@@ -402,17 +420,17 @@ for filt in filter:
 	plt.ylabel(r'Sigma $\cdot$ Amplitude [ms * mA]', fontsize=14)  # ----------------For time dependent measurement----------------
 	plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
 	plt.grid(b=None, which='major', axis='both', linewidth=0.3, linestyle="--", color="black") 
-	plt.savefig("sigma_times_area_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + str(speed) + ".png", bbox_inches='tight')
-	plt.clf()
+	# plt.savefig("sigma_times_area_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + str(speed) + ".png", bbox_inches='tight')
+	# plt.clf()
 
-# plt.figure(3)
-# # plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
-# plt.savefig("all_sigma(time)_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
+plt.figure(3)
+# plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+plt.savefig("all_sigma(time)_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
-# # # plt.figure(4)
-# # # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+# # plt.figure(4)
+# # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 
-# plt.figure(5)
-# # plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
-# plt.savefig("all_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
+plt.figure(5)
+# plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+plt.savefig("all_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
