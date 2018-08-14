@@ -253,7 +253,7 @@ mean_bct = mean_bct_sum_sum/mean_bct_length_length
 for filt in filter:
 	for r in run:	
 		measured_data_dict[(str(r),str(filt),"sigmas_normalised")] = mean_bct * np.asarray(measured_data_dict[(str(r),str(filt),"sigmas")])/np.asarray(measured_data_dict[(str(r),str(filt),"bcts")])
-		
+		measured_data_dict[(str(r),str(filt),"sigmas_areas_normalised")] = mean_bct * np.asarray(measured_data_dict[(str(r),str(filt),"sigmas_areas")])/np.asarray(measured_data_dict[(str(r),str(filt),"bcts")])
 #------------------------------------------------------------------------------------------Old ploting------------------------------------------------------------------------------------------
 	# 	plt.figure(2)
 	# 	# # For not normalised data---------------------------------
@@ -305,18 +305,6 @@ for filt in filter:
 
 	filter_range = range(0,20)
 
-	# if speed == 10:
-	# 	if filt == 1:
-	# 		filter_range = range(0,2)
-	# 	if filt == 2:
-	# 		filter_range = range(0,11)
-
-	# if speed == 15:
-	# 	if filt == 1:
-	# 		filter_range = range(0,3)
-	# 	if filt == 2:
-	# 		filter_range = range(0,15)
-
 
 	for i in filter_range:
 		all_sigmas = []
@@ -328,7 +316,8 @@ for filt in filter:
 		for r in run:
 			all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas_normalised")][i])
 			# all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas")][i]) #Not normalised sigma
-			all_sigmas_areas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas")][i])			
+			all_sigmas_areas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas_normalised")][i])	
+			# all_sigmas_areas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas")][i])	#Not normalised sigma		
 			all_pms.append(measured_data_dict[(str(r),str(filt),"pms")][i])
 			all_volts.append(measured_data_dict[(str(r),str(filt),"volts")][i])
 			all_bcts.append(measured_data_dict[(str(r),str(filt),"bcts")][i])
@@ -363,15 +352,56 @@ for filt in filter:
 	measured_data_dict[(str(filt),"bcts_final")] = bcts_final
 	measured_data_dict[(str(filt),"bcts_final_errors")] = bcts_final_errors
 
+print(" "
+	"<html><head><style>"
+		"table, th, td {"
+		    "border: 1px solid black;"
+		    "border-collapse: collapse;"
+		"}"
+		"th, td {"
+		    "padding: 5px;"
+		    "text-align: center;"
+		"}"
+		"</style></head><body>"
+		'<table width=700>'
+		  "<tr>"
+		  	"<th></th>"
+		    "<th colspan='2'>" + str(speed) + "</th>"
+		    "<th> PM gain range </th>"
+	  "</tr>	")
+
+	
+
+for filt in filter:
+
+	filter_range = 1025
+
+	if speed == 10:
+		if filt == 1:
+			filter_range = 125
+		if filt == 2:
+			filter_range = 575
+
+	if speed == 15:
+		if filt == 1:
+			filter_range = 175
+		if filt == 2:
+			filter_range = 775
+
+
 	# ---------------------------------------------------- Empiricla Fit ----------------------------------------------------
-	fit_intensity(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], measured_data_dict[(str(filt),"sigmas_final_errors")], filter_list1[filt], speed, mean_bct)
-	chi_test = chisquare(measured_data_dict[(str(filt),"sigmas_areas_final")], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")]), *popt1, filter_list1[filt], speed, mean_bct), measured_data_dict[(str(filt),"sigmas_areas_final_errors")])
+	# ----------------------------- Substracting cardboard -----------------------------
+	fit_intensity(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], (np.asarray(measured_data_dict[(str(filt),"sigmas_areas_final")])-np.asarray(measured_data_dict[(str(0),"sigmas_areas_final")]))[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], np.sqrt(np.asarray(measured_data_dict[(str(filt),"sigmas_areas_final_errors")])**2 + np.asarray(measured_data_dict[(str(0),"sigmas_areas_final_errors")])**2)[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], filter_list1[filt], speed, mean_bct)
+	chi_test = chisquare((np.asarray(measured_data_dict[(str(filt),"sigmas_areas_final")])-np.asarray(measured_data_dict[(str(0),"sigmas_areas_final")]))[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], *popt1, filter_list1[filt], speed, mean_bct), np.sqrt(np.asarray(measured_data_dict[(str(filt),"sigmas_areas_final_errors")])**2 + np.asarray(measured_data_dict[(str(0),"sigmas_areas_final_errors")])**2)[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range])
+	# fit_intensity(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], measured_data_dict[(str(filt),"sigmas_final_errors")], filter_list1[filt], speed, mean_bct)
+	# chi_test = chisquare(measured_data_dict[(str(filt),"sigmas_areas_final")], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")]), *popt1, filter_list1[filt], speed, mean_bct), measured_data_dict[(str(filt),"sigmas_areas_final_errors")])
 	# print(chi_test)
 	# print("")
 	# print("Filter: " + filter_list[filt])
 	# print("K: " + str(popt1[0]))
 	# print("")	
 	# ---------------------------------------------------- Empiricla Fit ----------------------------------------------------
+		
 
 	plt.figure(3)
 	plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
@@ -406,8 +436,12 @@ for filt in filter:
 	# plt.clf()
 
 	plt.figure(5)
-	plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
-	# plt.plot(measured_data_dict[(str(filt),"pms_final")], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")]), *popt1, filter_list1[filt], speed, mean_bct), label=("k: " + str(round(popt1[0],8)) + "$\pm$" + str(round(perr1[0],8)) + "\n" + "e: " + str(round(popt1[1],5)) + "$\pm$" + str(round(perr1[1],5)) + "\n" + "$\chi^2$: " + str(round(chi_test,3))), lw=0.8, color=color_list(filt))
+	# ----------------------------- Substracting cardboard -----------------------------
+	plt.errorbar(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], (np.asarray(measured_data_dict[(str(filt),"sigmas_areas_final")])-np.asarray(measured_data_dict[(str(0),"sigmas_areas_final")]))[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], xerr = np.asarray(measured_data_dict[(str(filt),"pms_final_errors")])[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], yerr = np.sqrt(np.asarray(measured_data_dict[(str(filt),"sigmas_areas_final_errors")])**2 + np.asarray(measured_data_dict[(str(0),"sigmas_areas_final_errors")])**2)[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
+	# plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
+	plt.plot(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], *popt1, filter_list1[filt], speed, mean_bct), label=("k: " + str(round(popt1[0],8)) + "$\pm$" + str(round(perr1[0],8)) + "\n" + "e: " + str(round(popt1[1],5)) + "$\pm$" + str(round(perr1[1],5)) + "\n" + "$\chi^2$: " + str(round(chi_test,3))), lw=0.8, color=color_list(filt))
+	# Without label ----------------
+	# plt.plot(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range], *popt1, filter_list1[filt], speed, mean_bct), label= None, lw=0.8, color=color_list(filt))
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
@@ -424,6 +458,16 @@ for filt in filter:
 	# plt.savefig("sigma_times_area_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + str(speed) + ".png", bbox_inches='tight')
 	# plt.clf()
 
+	print(" "
+	  "<tr>"
+	  	"<th>" + filter_list[filt] + "</th>"
+	    "<td>" + str(round(popt1[0],8)) + "&plusmn" + str(round(perr1[0],8)) + "</td>"
+	    "<td>" + str(round(popt1[1],5)) + "&plusmn" + str(round(perr1[1],5)) + "</td>"
+	    "<td>" + str(filter_range) + "</td>"
+	  "</tr>")
+	  
+print("</table></body></html>")
+
 # plt.figure(3)
 # # plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 # plt.savefig("all_sigma(time)_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
@@ -435,3 +479,4 @@ for filt in filter:
 # # plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 # plt.savefig("all_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
+# plt.show()
