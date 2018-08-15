@@ -8,11 +8,11 @@ import time
 import warnings
 
 # Settings
-user = "PSB.USER.MD5"
+user = "PSB.USER.MD4"
 
 ring = "R2"
-speeds = [10]
-runs = [6,7,8]
+speeds = [15]
+runs = [7,8]
 filters = [0,1,2,3,4,5,6,7]
 planes = ["H"]
 
@@ -25,10 +25,10 @@ for p in planes:
     plane = p
     for s in speeds:
         for r in runs:
-            # if r == 6:
-            #     filters = [3,4,5,6,7]
-            # if r == 7:
-            #     filters = [0,1,2,3,4,5,6,7]               
+            if r == 7:
+                filters = [4,5,6,7]
+            if r == 8:
+                filters = [0,1,2,3,4,5,6,7]               
             for f in filters:
     
                 wire_speed = str(s)
