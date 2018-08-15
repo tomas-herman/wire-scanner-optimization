@@ -37,7 +37,7 @@ def gauss(x, a, b, c, d, e):
     return a * np.exp(-(x - b) ** 2 / (2 * c ** 2)) + d * x + e
 
 def empirical(x, a, e, b, c, d):
-    return a * x * b * 1/c * d + e
+    return a * x * b**1.172 * 1/c * d + e
 
 def fit_intensity(pm, intensity, intensity_error, filter, speed, bct):
     global popt1
@@ -53,13 +53,10 @@ def fit_intensity(pm, intensity, intensity_error, filter, speed, bct):
     	print("")
     	popt1[0] = float("NaN")
     	popt1[1] = float("NaN")
-    	popt1[2] = float("NaN")
-    	popt1[3] = float("NaN")
 
     	perr1[0] = float("NaN")
     	perr1[1] = float("NaN")
-    	perr1[2] = float("NaN")
-    	perr1[3] = float("NaN")
+
 
 
 def plot_profile(infile):
@@ -475,8 +472,8 @@ print("</table></body></html>")
 # # # plt.figure(4)
 # # # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 
-# plt.figure(5)
-# # plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
-# plt.savefig("all_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
+plt.figure(5)
+# plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+plt.savefig("all_test_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
 # plt.show()
