@@ -107,7 +107,7 @@ for p in planes:
                         data_y = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projDataSet1")
                         data_z = japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#ctrTStampSet1")
     
-                        with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_time" + str(ctime)  + "_speed" + str(wire_speed) + "_filter" + str(filt) + "_shot" + str(int(callback.counter/3)) + "__" + "_pm" + str(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain")) + "__" + "_voltage" + str(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#voltage")) + "__" + ".txt"), 'w') as fout:
+                        with open(os.path.join(folder, "profile_" + ring + "_" + plane + "_time" + str(ctime)  + "_speed" + str(wire_speed) + "_filter" + str(filt) + "_shot" + str(int(callback.counter/2)) + "__" + "_pm" + str(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#gain")) + "__" + "_voltage" + str(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#voltage")) + "__" + ".txt"), 'w') as fout:
                             for i, j, k in zip(data_x, data_y, data_z):
                                 if l < 3: 
                                     print(i, j, k)
@@ -117,7 +117,7 @@ for p in planes:
                         return 1
                     except TypeError:
                         print('>> No WS data. Repeating this settings in the next cycle.')
-                        callback.counter = callback.counter - 3                  
+                        callback.counter = callback.counter - 2                  
                         return 0
     
                 def record_bct(ring, ctime):
@@ -126,7 +126,7 @@ for p in planes:
                     folder_bct = os.path.join(folder, "bct")
                     param_bct = ["B" + ring + ".BCT-ST/Samples#samples", "B" + ring + ".BCT-ST/Samples#firstSampleTime", "B" + ring + ".BCT-ST/Samples#samplingTrain"]
     
-                    with open(os.path.join(folder_bct, "BCT_" + ring + "_" + str(ctime) + "_shot" + str(int(callback.counter/3)) + "__" ) + ".txt", "w") as bct_file:
+                    with open(os.path.join(folder_bct, "BCT_" + ring + "_" + str(ctime) + "_shot" + str(int(callback.counter/2)) + "__" ) + ".txt", "w") as bct_file:
                         intensity = japc.getParam("B" + ring + ".BCT-ST/Samples#samples")
                         first_sample_time = japc.getParam("B" + ring + ".BCT-ST/Samples#firstSampleTime")
                         sample_train = japc.getParam("B" + ring + ".BCT-ST/Samples#samplingTrain")
@@ -143,20 +143,18 @@ for p in planes:
                     print('')
                     print('>> Shot', callback.counter)
     
-                    if callback.counter % 3 == 1:
+                    if callback.counter % 2 == 1:
                         #print(callback.counter)
                         print('')
                         print('>> Setting parameters for a new scan')
                         set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed)
-                    elif callback.counter % 3 == 2:
-                        print('')
-                        print(">> Excecuting scan")
-                        #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
-                    else:
-                        print('')
-                        print(">> Reading data")
+                    elif callback.counter % 2 == 0:
                         get_profile(ring, plane, folder, ctime, callback.counter)
                         record_bct(ring, ctime)
+                        # set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed)
+                        print('')
+                        print(">> Reading data")
+                        
                         #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
                     
                    
@@ -170,7 +168,7 @@ for p in planes:
                 while pm <= 1001:
                     time.sleep(0.5)
                 else:
-                    time.sleep(1)
+                    time.sleep(5)
                     print('')
                     print(">> Finished measuring with this setting.")
     
