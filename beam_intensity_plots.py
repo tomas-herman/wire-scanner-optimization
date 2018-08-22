@@ -84,6 +84,10 @@ for r in run:
 										# print(pm)
 										if int(pm) > 40:
 
+											print("Run: " + str(r))
+											print("Filter: " + str(filt))
+											print("PM gain: " + str(pm))
+
 											# Accesing intensity for given shot ---------------------------------------------------------------------------------------
 											files_bct = glob.glob(os.path.join(folder+"/bct","*.txt")) 
 											for f_bct in files_bct:

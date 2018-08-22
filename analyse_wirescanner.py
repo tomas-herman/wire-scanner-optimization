@@ -37,7 +37,7 @@ def gauss(x, a, b, c, d, e):
     return a * np.exp(-(x - b) ** 2 / (2 * c ** 2)) + d * x + e
 
 def empirical(x, a, e, b, c, d):
-    return a * x * b**1.172 * 1/c * d + e
+    return a * x * b * 1/c * d + e
 
 def fit_intensity(pm, intensity, intensity_error, filter, speed, bct):
     global popt1
@@ -123,7 +123,7 @@ color_list = plt.get_cmap('Dark2')
 filter_list = ["0% cardboard", "20%", "5%", "2%", "0.5%", "0.2%", "100% no filter", "0% metal" ]
 filter_list1 = [1, 20, 5, 2, 0.5, 0.2, 100, 1]
 
-run = [9]
+run = [4,5,6,7,8,9,10]
 # run = [1,2,3,4,5,6]
 filter = [0,1,2,3,4,5,6,7]
 # filter = [0,4,5,7]
@@ -181,24 +181,24 @@ for r in run:
 											plot_profile(f)
 											
 											# ---------------------------------------Plotting individual profiles---------------------------------------
-											plt.figure(1)
-											# plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
-											# plt.plot(data_x, data_y, label="data", color="black")
-											plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
-											plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
-											plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-											plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
+											# plt.figure(1)
+											# # plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
+											# # plt.plot(data_x, data_y, label="data", color="black")
+											# plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
+											# plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
+											# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+											# plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
 
-											# plt.xlabel('Position [mm]')
-											plt.xlabel('Time [ms]')  # ----------------For time dependent measurement----------------
-											plt.ylabel(r'Current [mA]')
+											# # plt.xlabel('Position [mm]')
+											# plt.xlabel('Time [ms]')  # ----------------For time dependent measurement----------------
+											# plt.ylabel(r'Current [mA]')
 
-											if not os.path.exists(folder_profiles):
-												print("Creating folder: " + folder_profiles)
-												os.makedirs(folder_profiles)
+											# if not os.path.exists(folder_profiles):
+											# 	print("Creating folder: " + folder_profiles)
+											# 	os.makedirs(folder_profiles)
 
-											plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
-											plt.clf()
+											# plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
+											# plt.clf()
 											# ---------------------------------------Plotting individual profiles---------------------------------------
 
 
@@ -311,10 +311,10 @@ for filt in filter:
 		all_bcts = []
 
 		for r in run:
-			all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas_normalised")][i])
-			# all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas")][i]) #Not normalised sigma
-			all_sigmas_areas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas_normalised")][i])	
-			# all_sigmas_areas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas")][i])	#Not normalised sigma		
+			# all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas_normalised")][i])
+			all_sigmas.append(measured_data_dict[(str(r),str(filt),"sigmas")][i]) #Not normalised sigma
+			# all_sigmas_areas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas_normalised")][i])	
+			all_sigmas_areas.append(measured_data_dict[(str(r),str(filt),"sigmas_areas")][i])	#Not normalised sigma		
 			all_pms.append(measured_data_dict[(str(r),str(filt),"pms")][i])
 			all_volts.append(measured_data_dict[(str(r),str(filt),"volts")][i])
 			all_bcts.append(measured_data_dict[(str(r),str(filt),"bcts")][i])
@@ -469,11 +469,11 @@ print("</table></body></html>")
 # # plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 # plt.savefig("all_sigma(time)_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
-# # # plt.figure(4)
-# # # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+# # # # plt.figure(4)
+# # # # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 
-plt.figure(5)
-# plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
-plt.savefig("all_new_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
+# plt.figure(5)
+# # plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+# plt.savefig("all_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
 # plt.show()
