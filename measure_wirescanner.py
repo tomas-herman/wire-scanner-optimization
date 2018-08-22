@@ -8,12 +8,12 @@ import time
 import warnings
 
 # Settings
-user = "PSB.USER.MD4"
+user = "PSB.USER.MD1"
 
 ring = "R2"
-speeds = [15]
-runs = [7,8,9,10,11]
-filters = [0,1,2,3,4,5,6,7]
+speeds = [10]
+runs = [10]
+filters = [3]
 planes = ["H"]
 
 # Start pyjapc
@@ -25,16 +25,16 @@ for p in planes:
     plane = p
     for s in speeds:
         for r in runs:
-            if r == 7:
-                filters = [4,5,6,7]
-            if r == 8:
-                filters = [0,1,2,3,4,5,6,7]               
+            #if r == 7:
+                #filters = [4,5,6,7]
+            #if r == 8:
+                #filters = [0,1,2,3,4,5,6,7]               
             for f in filters:
     
                 wire_speed = str(s)
                 ctime = 796
                 filt = f
-                pm = 50
+                pm = 200
                 run = r
     
     
@@ -149,23 +149,21 @@ for p in planes:
                         print('>> Setting parameters for a new scan')
                         set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed)
                     elif callback.counter % 2 == 0:
-                        get_profile(ring, plane, folder, ctime, callback.counter)
-                        record_bct(ring, ctime)
-                        # set_ws_params(ring, plane, time_stamp, ctime, filt, pm, wire_speed)
                         print('')
                         print(">> Reading data")
-                        
-                        #print(japc.getParam("B" + ring + ".BWS.2L1." + plane + "_ROT" + "/Acquisition#projPositionSet1"))
+                        record_bct(ring, ctime)
+                        time.sleep(0.5)
+                        get_profile(ring, plane, folder, ctime, callback.counter)
                     
                    
                 japc.subscribeParam("B" + ring + ".BCT-ST/Samples", callback)
                 japc.startSubscriptions()
     
     
-                callback.counter = 0
+                callback.counter = 6
     
     
-                while pm <= 1001:
+                while pm <= 201:
                     time.sleep(0.5)
                 else:
                     time.sleep(5)
