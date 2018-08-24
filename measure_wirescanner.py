@@ -11,8 +11,8 @@ import warnings
 user = "PSB.USER.MD6"
 
 ring = "R2"
-speeds = [15,10]
-runs = [15,16]
+speeds = [10]
+runs = [16,17,18,19]
 filters = [0,1,2,3,4,5,6,7]
 planes = ["H"]
 
@@ -24,19 +24,22 @@ japc.rbacLogin()
 for p in planes:
     plane = p
     for s in speeds:
-        if s == 15:
-            runs = [15,16]
-        if s == 10:
-            runs = [11,12,13,14,15,16,17] 
+        #if s == 15:
+            #runs = [15,16]
+        #if s == 10:
+            #runs = [11,12,13,14,15,16,17] 
         for r in runs:
-            if s == 15:
-                if r == 15:
-                    filters = [5,6,7]
-            if s == 15:
-                if r == 16:
-                    filters = [0,1,2,3,4,5,6,7]
-            if s == 10:
-                filters = [0,1,2,3,4,5,6,7]               
+            #if s == 10:
+                #if r == 16:
+                    #filters = [1,2,3,4,5,6,7]
+            #if s == 10:
+                #if r == 17:
+                    #filters = [0,1,2,3,4,5,6,7]
+            #if s == 15:
+                #if r == 13:
+                    #filters = [3]
+            #if s == 10:
+                #filters = [0,1,2,3,4,5,6,7]               
             for f in filters:
     
                 wire_speed = str(s)
@@ -174,7 +177,7 @@ for p in planes:
                 while pm <= 1001:
                     time.sleep(0.5)
                 else:
-                    time.sleep(5)
+                    time.sleep(1)
                     print('')
                     print(">> Finished measuring with this setting.")
     
