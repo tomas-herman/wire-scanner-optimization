@@ -8,13 +8,13 @@ import time
 import warnings
 
 # Settings
-user = "PSB.USER.LHC1A"
-
+user = "PSB.USER.MD4"
 ring = "R2"
-speeds = [15]
-runs = [21,22,23]
-filters = [0,2,3,4,5]
 planes = ["H"] 
+speeds = [10,15]
+runs = [31,32,33]
+filters = [0,2,3,4,5]
+
 
 # Start pyjapc
 japc = pyjapc.PyJapc()
@@ -35,12 +35,12 @@ for p in planes:
             #if s == 10:
                 #if r == 17:
                     #filters = [0,1,2,3,4,5,6,7]
-            if s == 15:
-                if r == 21:
-                    filters = [3,4,5]
-            if s == 15:
-                if r == 22:
-                    filters = [0,2,3,4,5]              
+            #if s == 15:
+                #if r == 21:
+                    #filters = [3,4,5]
+            #if s == 15:
+                #if r == 22:
+                    #filters = [0,2,3,4,5]              
             for f in filters:
     
                 wire_speed = str(s)
