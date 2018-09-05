@@ -88,8 +88,8 @@ def plot_profile(infile):
     data_z = []
 
     for x,y,z in zip(data_x_old,data_y_old,data_z_old):
-        # if x > -30 and x < 0:
-        if x > -35 and x < 5:
+        if x > -30 and x < 0:
+        # if x > -35 and x < 5:
             data_x.append(x)
             data_y.append(y)
             data_z.append(z)
@@ -136,9 +136,9 @@ filter_list1 = [1, 20, 5, 2, 0.5, 0.2, 100, 1]
 # run = [4,5,6,7,8,9,10,11,12,13,14,15,16]
 # run = [7,8,9,10,11,12,13,14,15,16]
 # ---- ISOHRS
-# run = [21,22,23]
+run = [21,22,23] # remove 23 for ISOHRS speed 10
 # ---- LHC25
-run = [31,32,33]
+# run = [31,32,33]
 # -------------- speed 15 runs --------------
 # ---- BCMS25
 # run = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
@@ -154,7 +154,7 @@ filter = [0,2,3,4,5]
 # filter = [1,6]
 ring = "R2"
 plane = "H"
-speed = 15
+speed = 10
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
@@ -205,24 +205,24 @@ for r in run:
 											# print(*popt)
 											
 											# ---------------------------------------Plotting individual profiles---------------------------------------
-											plt.figure(1)
-											# plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
-											# plt.plot(data_x, data_y, label="data", color="black")
-											plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
-											plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
-											plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
-											plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
+											# plt.figure(1)
+											# # plt.plot(data_x, gauss(np.asarray(data_x), *popt), label="fit", lw=0.8, color='green')
+											# # plt.plot(data_x, data_y, label="data", color="black")
+											# plt.plot(data_z, gauss(np.asarray(data_z), *popt), label="fit", lw=0.8, color='green')  # ----------------For time dependent measurement----------------
+											# plt.plot(data_z, data_y, label="data", color="black")  # ----------------For time dependent measurement----------------
+											# plt.legend(loc='best', prop={'size': 10}).get_frame().set_linewidth(0.5)
+											# plt.title("Filter: " + filter_list[filt] + ", PM gain: " + str(pm) + ", Sigma: " + str(round(abs(popt[2]),3)) + ", Amplitude: " + str(round(abs(popt[0]),3)))
 
-											# plt.xlabel('Position [mm]')
-											plt.xlabel('Time [ms]')  # ----------------For time dependent measurement----------------
-											plt.ylabel(r'Current [mA]')
+											# # plt.xlabel('Position [mm]')
+											# plt.xlabel('Time [ms]')  # ----------------For time dependent measurement----------------
+											# plt.ylabel(r'Current [mA]')
 
-											if not os.path.exists(folder_profiles):
-												print("Creating folder: " + folder_profiles)
-												os.makedirs(folder_profiles)
+											# if not os.path.exists(folder_profiles):
+											# 	print("Creating folder: " + folder_profiles)
+											# 	os.makedirs(folder_profiles)
 
-											plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
-											plt.clf()
+											# plt.savefig(os.path.join(folder_profiles, "profile_filter_" + filter_list[filt] + "_shot_" + shot + ".png"), bbox_inches='tight')
+											# plt.clf()
 											# ---------------------------------------Plotting individual profiles---------------------------------------
 
 
@@ -299,7 +299,7 @@ for filt in filter:
 	bcts_final = []
 	bcts_final_errors = []
 
-	filter_range = range(0,18)
+	filter_range = range(0,20)
 
 
 	for i in filter_range:
@@ -372,29 +372,72 @@ for filt in filter:
 
 	filter_range = [0,1025]
 
-	if speed == 10:
-		if filt == 1:
-			filter_range = [25,125]
-		if filt == 2:
-			filter_range = [375,575]
-		if filt == 3:
-			filter_range = [175,1025]
-		if filt == 4:
-			filter_range = [375,1025]
-		if filt == 5:
-			filter_range = [475,1025]			
+	# ------------ BCMS25 ------------ 
+	# if speed == 10:
+	# 	if filt == 1:
+	# 		filter_range = [25,125]
+	# 	if filt == 2:
+	# 		filter_range = [375,575]
+	# 	if filt == 3:
+	# 		filter_range = [175,1025]
+	# 	if filt == 4:
+	# 		filter_range = [375,1025]
+	# 	if filt == 5:
+	# 		filter_range = [475,1025]			
 
-	if speed == 15:
-		if filt == 1:
-			filter_range = [25,175]
-		if filt == 2:
-			filter_range = [375,675]
-		if filt == 3:
-			filter_range = [275,1025]
-		if filt == 4:
-			filter_range = [475,1025]
-		if filt == 5:
-			filter_range = [575,1025]			
+	# if speed == 15:
+	# 	if filt == 1:
+	# 		filter_range = [25,175]
+	# 	if filt == 2:
+	# 		filter_range = [375,675]
+	# 	if filt == 3:
+	# 		filter_range = [275,1025]
+	# 	if filt == 4:
+	# 		filter_range = [475,1025]
+	# 	if filt == 5:
+	# 		filter_range = [575,1025]			
+
+	# # ------------ LHC25 ------------ 
+	# if speed == 10:
+	# 	if filt == 2:
+	# 		filter_range = [25,225]
+	# 	if filt == 3:
+	# 		filter_range = [25,475]
+	# 	if filt == 4:
+	# 		filter_range = [225,1025]
+	# 	if filt == 5:
+	# 		filter_range = [475,1025]			
+
+	# if speed == 15:
+	# 	if filt == 2:
+	# 		filter_range = [25,275]
+	# 	if filt == 3:
+	# 		filter_range = [25,575]
+	# 	if filt == 4:
+	# 		filter_range = [225,1025]
+	# 	if filt == 5:
+	# 		filter_range = [275,1025]	
+
+	# ------------ ISOHRS ------------ 
+	# if speed == 10:
+	# 	if filt == 2:
+	# 		filter_range = [25,75]
+	# 	if filt == 3:
+	# 		filter_range = [25,175]
+	# 	if filt == 4:
+	# 		filter_range = [125,675]
+	# 	if filt == 5:
+	# 		filter_range = [175,1025]			
+
+	# if speed == 15:
+	# 	if filt == 2:
+	# 		filter_range = [25,75]
+	# 	if filt == 3:
+	# 		filter_range = [25,225]
+	# 	if filt == 4:
+	# 		filter_range = [275,1025]
+	# 	if filt == 5:
+	# 		filter_range = [325,1025]	
 
 
 
@@ -450,7 +493,7 @@ for filt in filter:
 	plt.xlabel('PM gain [%]', fontsize=14)
 	plt.xticks(np.arange(0, 1051, step=50), fontsize=12)
 	# plt.yticks(np.arange(1.5, 3, step=0.5)) # For sellected data
-	plt.yticks(np.arange(0, 0.5, step=0.05), fontsize=12) # For all data   # ----------------For time dependent measurement----------------
+	plt.yticks(np.arange(0.05, 0.85, step=0.05), fontsize=12) # For all data   # ----------------For time dependent measurement----------------
 	# plt.yticks(np.arange(0, 4, step=0.5), fontsize=12) # For all data
 	# plt.ylabel(r'Sigma [mm]', fontsize=14)
 	plt.ylabel(r'Sigma [ms]', fontsize=14)  # ----------------For time dependent measurement----------------
@@ -540,14 +583,14 @@ for filt in filter:
 
 # plt.figure(3)
 # # plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
-# plt.savefig("all_sigma(time)_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
+# plt.savefig("all_ISOHRS_sigma(time)_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
 # # # # plt.figure(4)
 # # # # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 
 # plt.figure(5)
 # # plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
-# plt.savefig("aFIT_all_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
+# plt.savefig("aFIT_all_ISOHRS_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
 # plt.figure(6)
 # # plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
