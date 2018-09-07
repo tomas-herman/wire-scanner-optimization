@@ -8,11 +8,11 @@ import time
 import warnings
 
 # Settings
-user = "PSB.USER.MD6"
+user = "PSB.USER.LHC2A"
 ring = "R2"
-planes = ["H"] 
-speeds = [10,15]
-runs = []
+planes = ["V"] 
+speeds = [10]
+runs = [49,48]
 filters = [0,2,3,4,5]
 
 
