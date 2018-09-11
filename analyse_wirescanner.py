@@ -15,6 +15,16 @@ from scipy.optimize import curve_fit
 import intervals as I
 
 
+# rcParams['figure.figsize'] = 4, 2
+# params = {'text.latex.preamble': [r'\usepackage{siunitx}', r'\usepackage{mathrsfs}']}
+# plt.rcParams.update(params)
+# rcParams['legend.frameon'] = 'True'
+plt.rc('font', family='serif')
+plt.rc('xtick', labelsize='small')
+plt.rc('ytick', labelsize='small')
+plt.rc('ytick', labelsize='small')
+plt.rcParams['lines.markersize'] = 5
+
 def is_header(line):
     return re.search(r'#|@|%|\$|&', line) is not None
 
@@ -88,6 +98,7 @@ def plot_profile(infile):
     data_z = []
 
     for x,y,z in zip(data_x_old,data_y_old,data_z_old):
+        # if x > -10 and x < 10:
         # if x > -25 and x < 0:
         if x > -35 and x < 5:
             data_x.append(x)
@@ -137,18 +148,32 @@ filter_list1 = [1, 20, 5, 2, 0.5, 0.2, 100, 1]
 # run = [7,8,9,10,11,12,13,14,15,16]
 # run = [9,10,11,12]
 # ---- ISOHRS
-# run = [21,22] # remove 23 for ISOHRS speed 10
+run = [21,22] # remove 23 for ISOHRS speed 10
 # ---- LHC25
 # run = [31,33]
 # -------------- speed 15 runs --------------
 # ---- BCMS25
 # run = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
 # run = [8,9,10,11,12,13,14,15,16]
-run = [9,13,16]
+# run = [9,13,16]
 # ---- ISOHRS
 # run = [21,22,23]
 # ---- LHC25
 # run = [31,32,33]
+
+# --------!!!!!!!!!!VERTICAL RUNS!!!!!!!!!!--------
+# -------------- speed 10 runs --------------
+# ---- BCMS25
+# run = [41,42]
+# ---- LHC25
+# run = [48,49]
+# -------------- speed 15 runs --------------
+# ---- BCMS25
+# run = [41,42]
+# ---- LHC25
+# run = [48.49]
+
+
 
 # filter = [0,1,2,3,4,5,6,7]
 filter = [0,2,3,4,5]
@@ -156,7 +181,7 @@ filter = [0,2,3,4,5]
 # filter = [1,6]
 ring = "R2"
 plane = "H"
-speed = 15
+speed = 10
 measured_data_dict = collections.defaultdict(list)
 mean_bct_sum = 0
 mean_bct_length = 0
@@ -378,29 +403,29 @@ for filt in filter:
 	filter_range = [0,1025]
 
 	# ------------ BCMS25 ------------ 
-	if speed == 10:
-		if filt == 1:
-			filter_range = [25,125]
-		if filt == 2:
-			filter_range = [375,575]
-		if filt == 3:
-			filter_range = [175,1025]
-		if filt == 4:
-			filter_range = [375,1025]
-		if filt == 5:
-			filter_range = [475,1025]			
+	# if speed == 10:
+	# 	if filt == 1:
+	# 		filter_range = [25,125]
+	# 	if filt == 2:
+	# 		filter_range = [375,575]
+	# 	if filt == 3:
+	# 		filter_range = [175,1025]
+	# 	if filt == 4:
+	# 		filter_range = [375,1025]
+	# 	if filt == 5:
+	# 		filter_range = [475,1025]			
 
-	if speed == 15:
-		if filt == 1:
-			filter_range = [25,175]
-		if filt == 2:
-			filter_range = [375,675]
-		if filt == 3:
-			filter_range = [275,1025]
-		if filt == 4:
-			filter_range = [475,1025]
-		if filt == 5:
-			filter_range = [575,1025]			
+	# if speed == 15:
+	# 	if filt == 1:
+	# 		filter_range = [25,175]
+	# 	if filt == 2:
+	# 		filter_range = [375,675]
+	# 	if filt == 3:
+	# 		filter_range = [275,1025]
+	# 	if filt == 4:
+	# 		filter_range = [475,1025]
+	# 	if filt == 5:
+			# filter_range = [575,1025]			
 
 	# # ------------ LHC25 ------------ 
 	# if speed == 10:
@@ -424,25 +449,48 @@ for filt in filter:
 	# 		filter_range = [275,1025]	
 
 	# ------------ ISOHRS ------------ 
+	if speed == 10:
+		if filt == 2:
+			filter_range = [25,75]
+		if filt == 3:
+			filter_range = [25,175]
+		if filt == 4:
+			filter_range = [125,625]
+		if filt == 5:
+			filter_range = [175,975]			
+
+	if speed == 15:
+		if filt == 2:
+			filter_range = [25,75]
+		if filt == 3:
+			filter_range = [25,225]
+		if filt == 4:
+			filter_range = [275,1025]
+		if filt == 5:
+			filter_range = [325,1025]	
+
+
+# --------!!!!!!!!!!VERTICAL RUNS!!!!!!!!!!--------
+	# ------------ BCMS25 ------------ 
 	# if speed == 10:
 	# 	if filt == 2:
-	# 		filter_range = [25,75]
+	# 		filter_range = [175,825]
 	# 	if filt == 3:
-	# 		filter_range = [25,175]
-	# 	if filt == 4:
-	# 		filter_range = [125,625]
-	# 	if filt == 5:
-	# 		filter_range = [175,975]			
-
-	# if speed == 15:
-	# 	if filt == 2:
-	# 		filter_range = [25,75]
-	# 	if filt == 3:
-	# 		filter_range = [25,225]
+	# 		filter_range = [175,925]
 	# 	if filt == 4:
 	# 		filter_range = [275,1025]
 	# 	if filt == 5:
-	# 		filter_range = [325,1025]	
+	# 		filter_range = [375,1025]
+	# ------------ LHC25 ------------ 
+	# if speed == 10:
+	# 	if filt == 2:
+	# 		filter_range = [75,175]
+	# 	if filt == 3:
+	# 		filter_range = [75,575]
+	# 	if filt == 4:
+	# 		filter_range = [275,1025]
+	# 	if filt == 5:
+	# 		filter_range = [325,1025]				
 
 
 
@@ -475,7 +523,7 @@ for filt in filter:
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
-	plt.title(ring + plane + " Speed: " + str(speed) + ", Sigma $\cdot$ Amplitude on PM gain." + " Avg beam I: " + str(int(round(mean_bct))) + "$ \cdot 10^{10}$ protons", fontsize=18)
+	plt.titlering + plane + ", " + str(speed) + " m/s " + ", Sigma $\cdot$ Amplitude on PM gain." + " Avg beam I: " + str(int(round(mean_bct))) + "$ \cdot 10^{10}$ protons", fontsize=18)
 	plt.xlabel('PM gain [%]', fontsize=14)
 	plt.xticks(np.arange(0, 1051, step=50), fontsize=12)
 	# plt.yticks(np.arange(-0.25, 4, step=0.25), fontsize=12) # For all data 
@@ -490,19 +538,19 @@ for filt in filter:
 # ------------------------------------------------------------------------------------------Old ploting------------------------------------------------------------------------------------------
 
 	plt.figure(3)
-	plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
+	plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_final_errors")], color=color_list(filt), fmt='o', label='Filter: ' + filter_list[filt])
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
-	fig.set_size_inches(15, 9)
-	plt.title(ring + plane + " Speed: " + str(speed) + ", Sigma on PM gain." + " Avg beam I: " + str(int(round(mean_bct))) + "$ \cdot 10^{10}$ protons", fontsize=22)
-	plt.xlabel('PM gain [%]', fontsize=20)
-	plt.xticks(np.arange(0, 1051, step=50), fontsize=16)
+	fig.set_size_inches(8.27, 4.135)
+	plt.title(ring + plane + ", " + str(speed) + " m/s " + ", Sigma on PM gain." + " Avg. beam I: " + str(int(round(mean_bct))) + "$ \cdot$10$^{10}$ protons")
+	plt.xlabel('PM gain [%]')
+	plt.xticks(np.arange(0, 1051, step=50))
 	# plt.yticks(np.arange(1.5, 3, step=0.5)) # For sellected data
-	plt.yticks(np.arange(0.1, 0.90, step=0.05), fontsize=16) # For all data   # ----------------For time dependent measurement----------------
+	plt.yticks(np.arange(0.10, 1, step=0.05)) # For all data   # ----------------For time dependent measurement----------------
 	# plt.yticks(np.arange(0, 4, step=0.5), fontsize=12) # For all data
 	# plt.ylabel(r'Sigma [mm]', fontsize=14)
-	plt.ylabel(r'Sigma [ms]', fontsize=20)  # ----------------For time dependent measurement----------------
-	plt.legend(loc='best', prop={'size': 18}).get_frame().set_linewidth(0.5)
+	plt.ylabel(r'Sigma [ms]')  # ----------------For time dependent measurement----------------
+	plt.legend(loc='best').get_frame().set_linewidth(0.5)
 	plt.grid(b=None, which='major', axis='both', linewidth=0.3, linestyle="--", color="black") 
 	# plt.savefig("sigma_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + str(speed) + ".png", bbox_inches='tight')
 	# plt.clf()
@@ -523,23 +571,24 @@ for filt in filter:
 
 	plt.figure(5)
 	# ----------------------------- Substracting cardboard -----------------------------
-	plt.errorbar(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], (np.asarray(measured_data_dict[(str(filt),"sigmas_areas_final")])-np.asarray(measured_data_dict[(str(0),"sigmas_areas_final")]))[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], xerr = np.asarray(measured_data_dict[(str(filt),"pms_final_errors")])[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], yerr = np.sqrt(np.asarray(measured_data_dict[(str(filt),"sigmas_areas_final_errors")])**2 + np.asarray(measured_data_dict[(str(0),"sigmas_areas_final_errors")])**2)[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
+	plt.errorbar(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], (np.asarray(measured_data_dict[(str(filt),"sigmas_areas_final")])-np.asarray(measured_data_dict[(str(0),"sigmas_areas_final")]))[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], xerr = np.asarray(measured_data_dict[(str(filt),"pms_final_errors")])[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], yerr = np.sqrt(np.asarray(measured_data_dict[(str(filt),"sigmas_areas_final_errors")])**2 + np.asarray(measured_data_dict[(str(0),"sigmas_areas_final_errors")])**2)[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], color=color_list(filt), fmt='o', label='Filter: ' + filter_list[filt])
 	# plt.errorbar(measured_data_dict[(str(filt),"pms_final")], measured_data_dict[(str(filt),"sigmas_areas_final")], xerr = measured_data_dict[(str(filt),"pms_final_errors")], yerr = measured_data_dict[(str(filt),"sigmas_areas_final_errors")], color=color_list(filt), fmt='o', markersize=5, label='Filter: ' + filter_list[filt])
 	# plt.plot(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], *popt1, filter_list1[filt], speed, mean_bct), label=("k: " + str(round(popt1[0],8)) + "$\pm$" + str(round(perr1[0],8)) + "\n" + "e: " + str(round(popt1[1],5)) + "$\pm$" + str(round(perr1[1],5)) + "\n" + "$\chi^2$: " + str(round(chi_test,3))), lw=0.8, color=color_list(filt))
 	# Without label ----------------
 	plt.plot(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], empirical(np.asarray(measured_data_dict[(str(filt),"pms_final")])[np.logical_and(filter_range[0]<np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"pms_final")])<filter_range[1])], *popt1, filter_list1[filt], speed, mean_bct), label= None, lw=0.8, color=color_list(filt))
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
-	fig.set_size_inches(15, 9)
-	plt.title(ring + plane + " Speed: " + str(speed) + ", Sigma $\cdot$ Amplitude on PM gain." + " Avg beam I: " + str(int(round(mean_bct))) + "$ \cdot 10^{10}$ protons", fontsize=22)
-	plt.xlabel('PM gain [%]', fontsize=20)
-	plt.xticks(np.arange(0, 1051, step=50), fontsize=16)
+	fig.set_size_inches(8.27, 4.135)
+	plt.title(ring + plane + ", " + str(speed) + " m/s " + ", Sigma $\cdot$ Amplitude on PM gain." + " Avg beam I: " + str(int(round(mean_bct))) + "$ \cdot$10$^{10}$ protons")
+	plt.xlabel('PM gain [%]')
+	# plt.xticks(rotation=50)
+	plt.xticks(np.arange(0, 1051, step=50))
 	# plt.yticks(np.arange(-0.25, 4, step=0.25), fontsize=12) # For all data 
-	plt.yticks(np.arange(-0.025, 0.3, step=0.025), fontsize=16) # For all data   # ----------------For time dependent measurement----------------
+	plt.yticks(np.arange(-0.025, 0.3, step=0.025)) # For all data   # ----------------For time dependent measurement----------------
 	# plt.yticks(np.arange(-0.25, 1, step=0.25)) # For sellected data
 	# plt.ylabel(r'Sigma $\cdot$ Amplitude [mm * mA]', fontsize=14)
-	plt.ylabel(r'Sigma $\cdot$ Amplitude [ms * mA]', fontsize=20)  # ----------------For time dependent measurement----------------
-	plt.legend(loc='best', prop={'size': 18}).get_frame().set_linewidth(0.5)
+	plt.ylabel(r'Sigma $\cdot$ Amplitude [ms * mA]')  # ----------------For time dependent measurement----------------
+	plt.legend(loc='best').get_frame().set_linewidth(0.5)
 	plt.grid(b=None, which='major', axis='both', linewidth=0.3, linestyle="--", color="black") 
 	# plt.savefig("sigma_times_area_on_pm_" + ring + plane + "_filter" + str(filt) + "_speed" + str(speed) + ".png", bbox_inches='tight')
 	# plt.clf()
@@ -555,7 +604,7 @@ for filt in filter:
 	# plt.fill_between(np.asarray(measured_data_dict[(str(filt),"pms_final")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])-np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]), np.asarray(measured_data_dict[(str(filt),"sigmas_final")])+np.asarray(measured_data_dict[(str(filt),"sigmas_final_errors")]),facecolor=color_list[filt],alpha=0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(15, 9)
-	plt.title(ring + plane + " Speed: " + str(speed) + ", Sigma $\cdot$ Amplitude on PM gain." + " Avg beam I: " + str(int(round(mean_bct))) + "$ \cdot 10^{10}$ protons", fontsize=18)
+	plt.title(ring + plane + ", " + str(speed) + " m/s " + ", Sigma $\cdot$ Amplitude on PM gain." + " Avg beam I: " + str(int(round(mean_bct))) + "$ \cdot 10^{10}$ protons", fontsize=18)
 	plt.xlabel('PM voltage [V]', fontsize=14)
 	# plt.xticks(np.arange(0, 1051, step=50), fontsize=12)
 	# plt.yticks(np.arange(-0.25, 4, step=0.25), fontsize=12) # For all data 
@@ -587,15 +636,15 @@ print("</table></body></html>")
 # plt.savefig("aaTEST__all_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
 # plt.figure(3)
-# # plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+# # # plt.savefig("all_sigma_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 # plt.savefig("all_ISOHRS_sigma(time)_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
 # # # # plt.figure(4)
 # # # # plt.savefig("all_sigma_times_area_on_intensity_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
 
 plt.figure(5)
-# plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
-plt.savefig("aFIT_all_BCMS25_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
+plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
+plt.savefig("aFIT_all_ISOHRS_sigma(time)_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')  # ----------------For time dependent measurement----------------
 
 # plt.figure(6)
 # # plt.savefig("all_sigma_times_area_on_pm_" + ring + plane + "_speed" + str(speed) + ".png", bbox_inches='tight')
